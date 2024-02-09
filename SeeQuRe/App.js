@@ -21,7 +21,7 @@ export default function App() {
         <Stack.Screen name='feedback' component={Feedback} />
         <Stack.Screen name='register' component={Register} />
         <Stack.Screen name='scanner' component={Scanner} />
-        <Stack.Screen name='urlhistory' component={urlHistory} />
+        <Stack.Screen name='URL History' component={urlHistory} />
         <Stack.Screen name='userprofile' component={userProfile} />
       </Stack.Navigator>
     </NavigationContainer>

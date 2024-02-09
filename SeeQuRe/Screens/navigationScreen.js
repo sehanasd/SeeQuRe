@@ -17,7 +17,7 @@ const Navigation = ({ navigation }) => {
                 <Button title="login" onPress={() => navigation.navigate("login")} />
             </View>
             <View style={styles.button}>
-                <Button title="urlhistory" onPress={() => navigation.navigate("urlhistory")} />
+                <Button title="URL History" onPress={() => navigation.navigate("URL History")} />
             </View>
             <View style={styles.button}>
                 <Button title="userprofile" onPress={() => navigation.navigate("userprofile")} />
