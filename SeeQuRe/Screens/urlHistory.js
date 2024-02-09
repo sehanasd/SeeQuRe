@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert } from "react-native";
 
 const urlHistory = () => {
-    // Sample data
+    
     const sampleData = [
-        { id: 1, url: 'https://example.com/page1' },
+        { id: 1, url: 'https://facebook.com/' },
         { id: 2, url: 'https://example.com/page2' },
         { id: 3, url: 'https://example.com/page3' },
         { id: 4, url: 'https://example.com/page4' },
@@ -14,14 +14,36 @@ const urlHistory = () => {
         { id: 8, url: 'https://example.com/page8' },
         { id: 9, url: 'https://example.com/page9' },
         { id: 10, url: 'https://example.com/page10' },
-        
     ];
 
-    
+    const handleUrlPress = (url) => {
+        Alert.alert(
+            'Are you Sure?',
+            `Do you want to open ${url} in the default browser?`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'OK',
+                    onPress: () => openUrl(url),
+                },
+            ],
+            { cancelable: false }
+        );
+    };
+
+    const openUrl = (url) => {
+        Linking.openURL(url).catch((err) => console.error('An error occurred', err));
+    };
+
     const renderItem = ({ item }) => (
-        <View style={styles.item}>
-            <Text>{item.url}</Text>
-        </View>
+        <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
+            <View style={styles.item}>
+                <Text>{item.url}</Text>
+            </View>
+        </TouchableOpacity>
     );
 
     return (
@@ -38,7 +60,7 @@ const urlHistory = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 40, 
+        marginTop: 40,
     },
     item: {
         padding: 10,
