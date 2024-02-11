@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert } from "react-native";
 
-const urlHistory = () => {
+const UrlHistory = () => {
     
     const sampleData = [
         { id: 1, url: 'https://facebook.com/' },
@@ -18,7 +18,7 @@ const urlHistory = () => {
 
     const handleUrlPress = (url) => {
         Alert.alert(
-            'Are you Sure?',
+            'Open URL',
             `Do you want to open ${url} in the default browser?`,
             [
                 {
@@ -40,14 +40,15 @@ const urlHistory = () => {
 
     const renderItem = ({ item }) => (
         <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
-            <View style={styles.item}>
-                <Text>{item.url}</Text>
+            <View style={styles.itemContainer}>
+                <Text style={styles.urlText}>{item.url}</Text>
             </View>
         </TouchableOpacity>
     );
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>URL History</Text>
             <FlatList
                 data={sampleData}
                 renderItem={renderItem}
@@ -61,12 +62,24 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 40,
+        paddingHorizontal: 20,
     },
-    item: {
+    title: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    itemContainer: {
         padding: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        backgroundColor: '#f9f9f9',
+        marginBottom: 10,
+        borderRadius: 5,
+    },
+    urlText: {
+        fontSize: 16,
     },
 });
 
-export default urlHistory;
+export default UrlHistory;
