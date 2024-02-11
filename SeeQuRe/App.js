@@ -1,39 +1,63 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View} from 'react-native';
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Feedback from './Screens/feedbackScreen';
-import Login from './Screens/loginScreen';
-import Register from './Screens/registerScreen';
-import urlHistory from './Screens/urlHistory';
-import userProfile from './Screens/userProfileScreen';
-import Navigation from './Screens/navigationScreen';
-import Scanner from './Screens/scannerScreen';
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { ChangePassword } from './Screens/Profile/ChangePassword';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import UrlHistory from './Screens/URLHistory/URLHistoryScreen';
+import Login from './Screens/Login/LoginScreen';
+import Scanner from './Screens/Scanner/ScannerPage';
+import { ResgisterPage } from './Screens/Register/RegisterPage';
+import { ProfilePage } from './Screens/Profile/ProfilePage';
+import FeedbackPage from './Screens/Profile/FeedbackPage';
+import { ChangeUsernamePage } from './Screens/Profile/ChangeUsernamePage';
 
-const Stack = createNativeStackNavigator();
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+// Create a new component that includes the Stack Navigator
+const ProfileStack = () => (
+  <Stack.Navigator initialRouteName='profile page' >
+    <Stack.Screen name="profile page" component={ProfilePage}  options={{ headerShown: false }}/>
+    <Stack.Screen name="changeUsername" component={ChangeUsernamePage} options={{ headerShown: false }} />
+    <Stack.Screen name="changePassword" component={ChangePassword}  />
+    <Stack.Screen name="feedback" component={FeedbackPage} options={{ headerShown: false }} />
+  </Stack.Navigator>
+);
+
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="navigation">
-        <Stack.Screen name='login' component={Login} />
-        <Stack.Screen name='navigation' component={Navigation} />
-        <Stack.Screen name='feedback' component={Feedback} />
-        <Stack.Screen name='register' component={Register} />
-        <Stack.Screen name='scanner' component={Scanner} />
-        <Stack.Screen name='URL History' component={urlHistory} />
-        <Stack.Screen name='userprofile' component={userProfile} />
-      </Stack.Navigator>
-    </NavigationContainer>
-    
-  );
-}
+      <Tab.Navigator
+        initialRouteName="scanner"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+            if (route.name === 'scanner') {
+              iconName = 'line-scan';
+            } else if (route.name === 'profile') {
+              iconName = 'account';
+            } else if (route.name === 'urlHistory') {
+              iconName = 'history';
+            } else if (route.name === 'login') {
+              iconName = 'login';
+            } else if (route.name === 'register') {
+              iconName = 'account-plus';
+            }
+            return <MaterialCommunityIcons name={iconName} size={size} color={color} />; // Use MaterialCommunityIcons instead of FontAwesome
+          },
+        })}
+      >
+        <Tab.Screen name="scanner" component={Scanner}  />
+        <Tab.Screen name="profile" component={ProfileStack} /> 
+        <Tab.Screen name="urlHistory" component={UrlHistory} />
+        <Tab.Screen name="login" component={Login} /> 
+        <Tab.Screen name="register" component={ResgisterPage} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;

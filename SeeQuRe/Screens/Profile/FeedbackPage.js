@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-const Feedback = () => {
+const FeedbackPage = () => {
   const [checked, setChecked] = useState(false);
   const [text, onChangeText] = useState("");
 
@@ -76,7 +76,7 @@ const Feedback = () => {
   );
 };
 
-export default Feedback;
+export default FeedbackPage;
 
 const styles = StyleSheet.create({
   container: {
