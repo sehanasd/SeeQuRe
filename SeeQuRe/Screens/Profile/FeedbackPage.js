@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-const Feedback = () => {
+const FeedbackPage = () => {
   const [checked, setChecked] = useState(false);
   const [text, onChangeText] = useState("");
 
@@ -76,7 +76,7 @@ const Feedback = () => {
   );
 };
 
-export default Feedback;
+export default FeedbackPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
 
   radioText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "400",
     marginLeft: 8,
     color: "#333",
   },
 
   questionText: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: "600",
     marginBottom: 15,
     color: "#333",
   },
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 
   submitButton: {
     backgroundColor: "#1e90ff",
-    borderRadius: 15,
+    borderRadius: 30,
     padding: 15,
     alignItems: "center",
     alignSelf: "center",
