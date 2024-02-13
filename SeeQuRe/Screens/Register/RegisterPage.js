@@ -11,23 +11,14 @@ const RegisterPage = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, marginHorizontal: 22 }}>
-                <View style={{ marginVertical: 10 }}>
-                    <Text style={{
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        marginVertical: 1,
-                        color: COLORS.black
-                    }}>
-                        Create Account
-                    </Text>
-
-                    <Text style={{
-                        fontSize: 14,
-                        color: COLORS.black
-                    }}>Unlock Seamless Experiences – Sign Up Now!</Text>
+                <View style={{ marginVertical: 10 , marginTop: 50, alignItems: "center"}}>
+                    <Text style={styles.title}>Register</Text>
+                    <Text style={styles.slogan}>Join SeeQuRe: Where Security Meets Simplicity</Text>
+                    
                 </View>
 
                 <View style={{ marginBottom: 12 }}>
+                    <Text style={styles.subtitle}>Create Account</Text>
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -297,7 +288,29 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center'
-    }
+    },
+
+    title: {
+        fontSize: 32,
+        // fontWeight: 'bold',
+        marginVertical: 1,
+        color: COLORS.black,
+        marginBottom: 10,
+        
+    },
+    slogan: {
+        fontSize: 16,
+        color: COLORS.black,
+        textAlign: 'center',
+
+    },
+    subtitle: {
+        fontSize: 16,
+        color: COLORS.black,
+        fontWeight: "bold",
+        marginTop: 15 
+    },
+
 })
 
 
