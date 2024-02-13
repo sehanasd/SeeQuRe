@@ -18,14 +18,13 @@ const Login = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={{ alignItems: 'center', marginTop: 0 }}>
+                <View style={{ alignItems: 'center', marginTop: 70 }}>
                     <Image 
                         source={require("../../assets/SeeQuReLogo.png")}
                         style={{
-                            height: 230,
-                            width: 230,
+                            height: 250,
+                            width: 250,
                             borderRadius: 20,
-                            marginTop: 0,
                             marginBottom: 0,
                         }}
                     />
@@ -46,17 +45,11 @@ const Login = ({ navigation }) => {
                     <View style={{ marginVertical: 10,  alignItems: 'center'}}>
                         <Text style={{
                             fontSize: 16,
-                            fontWeight: 'bold',
                             marginVertical: 10,
                             color: COLORS.black
                         }}>
                             Where Security Meets Simplicity
                         </Text>
-
-                        <Text style={{
-                            fontSize: 14,
-                            color: COLORS.black
-                        }}>Access Your World: Welcome to SeeQuRe</Text>
                         
                     </View>
 
@@ -222,7 +215,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     logoText: {
-        fontSize: 25,
+        fontSize: 32,
         color: COLORS.black,
     },
     qText: {
