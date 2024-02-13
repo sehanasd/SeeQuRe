@@ -10,6 +10,7 @@ export function ProfilePage() {
             <Button onPress={() => navigation.navigate('changeUsername')} title='Change Username'></Button>
             <Button onPress={() => navigation.navigate('changePassword')} title='Change Password'></Button>
             <Button onPress={() => navigation.navigate('feedback')} title='Feedback'></Button>
+            <Button onPress={() => navigation.navigate('login')} title='Logout'></Button>
         </View>
 
     )

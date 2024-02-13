@@ -50,11 +50,11 @@ const App = () => {
           },
         })}
       >
-        <Tab.Screen name="scanner" component={Scanner}  />
-        <Tab.Screen name="profile" component={ProfileStack} /> 
-        <Tab.Screen name="urlHistory" component={UrlHistory} />
-        <Tab.Screen name="login" component={Login} /> 
-        <Tab.Screen name="register" component={RegisterPage} />
+        <Tab.Screen name="scanner" component={Scanner}  options={{ headerShown: false }}  />
+        <Tab.Screen name="profile" component={ProfileStack}  options={{ headerShown: false }}  /> 
+        <Tab.Screen name="urlHistory" component={UrlHistory}  options={{ headerShown: false }}  />
+        <Tab.Screen name="login" component={Login} options={{ headerShown: false }}  /> 
+        <Tab.Screen name="register" component={RegisterPage} options={{ headerShown: false }}  />
       </Tab.Navigator>
     </NavigationContainer>
   );
