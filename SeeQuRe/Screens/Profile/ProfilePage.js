@@ -11,20 +11,20 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 // Import your avatar images
-import avatar1 from "/Users/Gamage/Desktop/SDGP/SeeQuRe/SeeQuRe/assets/Avatars/avatar 1.png";
-import avatar2 from "/Users/Gamage/Desktop/SDGP/SeeQuRe/SeeQuRe/assets/Avatars/avatar 2.jpeg";
-import avatar3 from "/Users/Gamage/Desktop/SDGP/SeeQuRe/SeeQuRe/assets/Avatars/avatar 3.jpeg";
-import avatar4 from "/Users/Gamage/Desktop/SDGP/SeeQuRe/SeeQuRe/assets/Avatars/avatar 4.jpeg";
-import avatar5 from "/Users/Gamage/Desktop/SDGP/SeeQuRe/SeeQuRe/assets/Avatars/avatar 5.jpeg";
+import avatar1 from "../../assets/Avatars/avatar 1.png";
+import avatar2 from "../../assets/Avatars/avatar 2.jpeg";
+import avatar3 from "../../assets/Avatars/avatar 3.jpeg";
+import avatar4 from "../../assets/Avatars/avatar 4.jpeg";
+import avatar5 from "../../assets/Avatars/avatar 5.jpeg";
 
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
-const avatarSize = 150; // Adjust the size of the currently displayed avatar
-const avatarBorderRadius = 90; // Adjust the border radius of the currently displayed avatar
-const avatarOptionSize = 60; // Adjust the size of the avatars in the container
+const avatarSize = 150; 
+const avatarBorderRadius = 90; 
+const avatarOptionSize = 60; 
 
 export function ProfilePage() {
   const navigation = useNavigation();
-  const [avatar, setAvatar] = useState(avatars[0]); // Default avatar
+  const [avatar, setAvatar] = useState(avatars[0]); 
   const [modalVisible, setModalVisible] = useState(false);
 
   const changeAvatar = (newAvatar) => {
@@ -32,8 +32,7 @@ export function ProfilePage() {
     setModalVisible(false);
   };
 
-  const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); // Adjusted gap between avatar options
-
+  const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -115,8 +114,8 @@ const styles = StyleSheet.create({
     width: avatarSize,
     height: avatarSize,
     borderRadius: avatarBorderRadius,
-    borderColor: "black", // Set border color to black
-    borderWidth: 2, // Set border width
+    borderColor: "black", 
+    borderWidth: 2, 
     marginBottom: 20,
   },
   modalContainer: {
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0)", // Fully transparent background
+    backgroundColor: "rgba(0, 0, 0, 0)", 
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
