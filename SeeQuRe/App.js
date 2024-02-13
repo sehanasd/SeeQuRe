@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import UrlHistory from './Screens/URLHistory/URLHistoryScreen';
 import Login from './Screens/Login/LoginScreen';
 import Scanner from './Screens/Scanner/ScannerPage';
-import { ResgisterPage } from './Screens/Register/RegisterPage';
+import RegisterPage from './Screens/Register/RegisterPage';
 import { ProfilePage } from './Screens/Profile/ProfilePage';
 import FeedbackPage from './Screens/Profile/FeedbackPage';
 import { ChangeUsernamePage } from './Screens/Profile/ChangeUsernamePage';
@@ -54,7 +54,7 @@ const App = () => {
         <Tab.Screen name="profile" component={ProfileStack} /> 
         <Tab.Screen name="urlHistory" component={UrlHistory} />
         <Tab.Screen name="login" component={Login} /> 
-        <Tab.Screen name="register" component={ResgisterPage} />
+        <Tab.Screen name="register" component={RegisterPage} />
       </Tab.Navigator>
     </NavigationContainer>
   );
