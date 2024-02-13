@@ -12,30 +12,29 @@ export function ChangePassword() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Change Password</Text>
             <TextInput
-                style={styles.input}
+                style={[styles.input, { borderColor: 'black' }]} // Changed borderColor to black
                 onChangeText={setCurrentPassword}
                 value={currentPassword}
                 placeholder="Current password"
                 secureTextEntry
             />
             <TextInput
-                style={styles.input}
+                style={[styles.input, { borderColor: 'black' }]} // Changed borderColor to black
                 onChangeText={setNewPassword}
                 value={newPassword}
                 placeholder="New password"
                 secureTextEntry
             />
             <TextInput
-                style={styles.input}
+                style={[styles.input, { borderColor: 'black' }]} // Changed borderColor to black
                 onChangeText={setConfirmPassword}
                 value={confirmPassword}
                 placeholder="Confirm password"
                 secureTextEntry
             />
             <TouchableOpacity
-                style={[styles.buttonContainer, { marginBottom: 20 }]} // Added marginBottom to move the button down
+                style={[styles.buttonContainer, { marginBottom: 20 }]}
                 onPress={handleSubmit}
             >
                 <Text style={styles.buttonText}>Submit</Text>
@@ -61,14 +60,14 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         width: '100%',
-        borderColor: '#841584',
+        borderColor: 'black', // Changed borderColor to black
         borderWidth: 1,
         marginBottom: 20,
         paddingLeft: 10,
         borderRadius: 5,
     },
     buttonContainer: {
-        backgroundColor: '#841584',
+        backgroundColor: '#2f90d8',
         borderRadius: 5,
         paddingVertical: 12,
         paddingHorizontal: 50,
@@ -78,10 +77,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         textAlign: 'center',
-    },
-    passwordPolicy: {
-        textAlign: 'left',
-        marginTop: 10,
-        color: '#666',
     },
 });
