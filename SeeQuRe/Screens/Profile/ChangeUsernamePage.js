@@ -22,7 +22,7 @@ export function ChangeUsernamePage() {
             />
             <Button
                 title="Submit"
-                color="#841584"
+                color="#2f90d8"
             />
         </View>
     );
