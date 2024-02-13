@@ -39,6 +39,10 @@ const FeedbackPage = () => {
         >
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>Feedback</Text>
+            <Text style={{ fontSize: 16, textAlign: "center" }}>
+              Share your thoughts! Your feedback helps us improve for a better
+              experience
+            </Text>
           </View>
           <View style={styles.questionContainer}>
             <Text style={styles.questionText}>
@@ -73,7 +77,9 @@ const FeedbackPage = () => {
             </View>
           </View>
           <View style={styles.commentSection}>
-            <Text style={styles.questionText}>Additional Comments</Text>
+            <Text style={{ marginTop: 10, fontSize: 16 }}>
+              Additional Comment
+            </Text>
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -113,24 +119,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#F7F7F7",
   },
 
   headerContainer: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 50,
   },
 
   headerText: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 32,
   },
 
   questionContainer: {
     marginBottom: 20,
+    marginTop: 20,
     backgroundColor: "#FFFFFF",
-
     borderRadius: 15,
     padding: 20,
   },
@@ -142,26 +146,23 @@ const styles = StyleSheet.create({
   },
 
   radioText: {
-    fontSize: 18,
-    fontWeight: "400",
+    fontSize: 14,
     marginLeft: 8,
-    color: "#333",
   },
 
   questionText: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 16,
     marginBottom: 15,
-    color: "#333",
   },
 
   commentSection: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   inputContainer: {
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
+    marginTop: 20,
     padding: 15,
   },
 
@@ -170,24 +171,21 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     borderWidth: 1,
-    borderColor: "black",
     borderRadius: 8,
     padding: 10,
     color: "#333",
   },
 
   submitButton: {
-    backgroundColor: "#1e90ff",
-    borderRadius: 30,
-    padding: 15,
+    backgroundColor: "#2f90d8",
+    borderRadius: 12,
+    padding: 10,
     alignItems: "center",
-    alignSelf: "center",
-    width: 200,
+    marginTop: 10,
   },
 
   submitButtonText: {
     color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 14,
   },
 });
