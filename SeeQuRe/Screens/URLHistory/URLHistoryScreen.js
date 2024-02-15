@@ -4,44 +4,63 @@ import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert } fr
 const UrlHistory = () => {
     
     const sampleData = [
-        { id: 1, url: 'https://facebook.com/' },
-        { id: 2, url: 'https://example.com/page2' },
-        { id: 3, url: 'https://example.com/page3' },
-        { id: 4, url: 'https://example.com/page4' },
-        { id: 5, url: 'https://example.com/page5' },
-        { id: 6, url: 'https://example.com/page6' },
-        { id: 7, url: 'https://example.com/page7' },
-        { id: 8, url: 'https://example.com/page8' },
-        { id: 9, url: 'https://example.com/page9' },
-        { id: 10, url: 'https://example.com/page10' },
+        { id: 1, url: 'https://facebook.com/', malicious: false },
+        { id: 2, url: 'https://example.com/page2', malicious: true },
+        { id: 3, url: 'https://example.com/page3', malicious: false },
+        { id: 4, url: 'https://example.com/page4', malicious: false },
+        { id: 5, url: 'https://example.com/page5', malicious: true },
+        { id: 6, url: 'https://example.com/page6', malicious: false },
+        { id: 7, url: 'https://example.com/page7', malicious: true },
+        { id: 8, url: 'https://example.com/page8', malicious: false },
+        { id: 9, url: 'https://example.com/page9', malicious: true },
+        { id: 10, url: 'https://example.com/page10', malicious: false },
     ];
 
-    const handleUrlPress = (url) => {
-        Alert.alert(
-            'Open URL',
-            `Do you want to open ${url} in the default browser?`,
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'OK',
-                    onPress: () => openUrl(url),
-                },
-            ],
-            { cancelable: false }
-        );
+    const handleUrlPress = (url, isMalicious) => {
+        if (isMalicious) {
+            Alert.alert(
+                'Malicious Link',
+                'This link seems to be malicious. Do you want to continue?',
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => openUrl(url),
+                    },
+                ],
+                { cancelable: false }
+            );
+        } else {
+            Alert.alert(
+                'Open URL',
+                `Do you want to open ${url} in the default browser?`,
+                [
+                    {
+                        text: 'Cancel',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'OK',
+                        onPress: () => openUrl(url),
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
     };
-
+    
     const openUrl = (url) => {
         Linking.openURL(url).catch((err) => console.error('An error occurred', err));
     };
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
+        <TouchableOpacity onPress={() => handleUrlPress(item.url, item.malicious)}>
             <View style={styles.itemContainer}>
                 <Text style={styles.urlText}>{item.url}</Text>
+                {item.malicious && <Text style={styles.maliciousLabel}>Malicious</Text>}
             </View>
         </TouchableOpacity>
     );
@@ -53,6 +72,7 @@ const UrlHistory = () => {
                 data={sampleData}
                 renderItem={renderItem}
                 keyExtractor={item => item.id.toString()}
+                contentContainerStyle={styles.listContent}
             />
         </View>
     );
@@ -61,13 +81,14 @@ const UrlHistory = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 40,
+        marginTop: 60, 
         paddingHorizontal: 20,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24, 
         fontWeight: 'bold',
         marginBottom: 20,
+        textAlign: 'center',
     },
     itemContainer: {
         padding: 10,
@@ -76,9 +97,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#f9f9f9',
         marginBottom: 10,
         borderRadius: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     urlText: {
         fontSize: 16,
+    },
+    maliciousLabel: {
+        color: 'red',
+        fontWeight: 'bold',
+    },
+    listContent: {
+        marginTop: 20, 
     },
 });
 
