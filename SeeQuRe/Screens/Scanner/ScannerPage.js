@@ -1,40 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, Button, Animated, Easing } from 'react-native';
 import { Camera } from 'expo-camera';
+import { useFocusEffect } from '@react-navigation/native';
 
-export default function ScannerPage() {
-  // State variables
-  const [hasPermission, setHasPermission] = useState(null); // Permission state
-  const [scanned, setScanned] = useState(false); // Scanned state
-  const [text, setText] = useState('Not yet scanned'); // Scanned text
+export default function ScannerPage({ navigation }) {
+  // State variables for camera permission, scanned status, and scanned URL
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  const [scannedUrl, setScannedUrl] = useState('Not yet scanned');
 
-  // Animated value for scanning line position
-  const [lineYPos] = useState(new Animated.Value(0)); 
+  // Animated value for the scanning line position
+  const lineYPos = useRef(new Animated.Value(-150)).current;
 
-  // Function to request camera permission
-  const askForCameraPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === 'granted');
-  };
-
-  // Effect to request camera permission on component mount
+  // Request camera permission on component mount
   useEffect(() => {
+    const askForCameraPermission = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    };
+
     askForCameraPermission();
   }, []);
 
-  // Function to handle barcode scanning event
+  // Start the scanning line animation when the scanned state changes
+  useEffect(() => {
+    if (!scanned) {
+      startLineAnimation();
+    }
+  }, [scanned]);
+
+  // Handler function for barcode scanned event
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    setText(data);
+    setScannedUrl(data);
     console.log('Type: ' + type + '\nData: ' + data);
+
+    // Stop the scanning line animation
+    lineYPos.stopAnimation();
   };
 
-  // Effect to start the animation of the scanning line on component mount
-  useEffect(() => {
-    startLineAnimation(); 
-  }, []);
-
-  // Function to start the animation of the scanning line
+  // Function to start the scanning line animation
   const startLineAnimation = () => {
     Animated.loop(
       Animated.sequence([
@@ -42,20 +47,39 @@ export default function ScannerPage() {
           toValue: 300,
           duration: 2000,
           easing: Easing.linear,
-          useNativeDriver: false, 
+          useNativeDriver: false,
         }),
         Animated.timing(lineYPos, {
-          toValue: 0,
+          toValue: -150,
           duration: 0,
-          useNativeDriver: false, 
+          useNativeDriver: false,
         }),
       ]),
     ).start();
   };
 
-  // Render logic based on camera permission status
+  // Function to reset the scanner state
+  const resetScanner = () => {
+    setScanned(false);
+    setScannedUrl('Not yet scanned');
+    // Restart the scanning line animation
+    startLineAnimation();
+  };
+
+  // Effect hook to handle focus effect
+  useFocusEffect(
+    React.useCallback(() => {
+      setScanned(false);
+      setScannedUrl('Not yet scanned');
+      startLineAnimation();
+      return () => {
+        lineYPos.stopAnimation();
+      };
+    }, [])
+  );
+
+  // Render UI based on camera permission status
   if (hasPermission === null) {
-    // Display message while requesting camera permission
     return (
       <View style={styles.container}>
         <Text>Requesting for camera permission</Text>
@@ -64,7 +88,6 @@ export default function ScannerPage() {
   }
 
   if (hasPermission === false) {
-    // Display message when camera permission is denied
     return (
       <View style={styles.container}>
         <Text style={{ margin: 10 }}>No access to camera</Text>
@@ -73,7 +96,7 @@ export default function ScannerPage() {
     );
   }
 
-  // Render camera view and barcode scanning functionality
+  // Render camera view, scanning line, scanned URL, and scan again button
   return (
     <View style={styles.container}>
       <Camera
@@ -81,26 +104,24 @@ export default function ScannerPage() {
         type={Camera.Constants.Type.back}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
       >
-        {/* Barcode box containing the scanning line */}
         <View style={styles.barcodebox}>
           <Animated.View
             style={[
               styles.scanningLine,
               {
-                transform: [{ translateY: lineYPos }], 
+                transform: [{ translateY: lineYPos }],
               },
             ]}
           />
         </View>
       </Camera>
-      {/* Display scanned text and option to scan again */}
-      <Text style={styles.maintext}>{text}</Text>
-      {scanned && <Button title={'Scan again?'} onPress={() => setScanned(false)} color='tomato' />}
+      <Text style={styles.maintext}>{scannedUrl}</Text>
+      {scanned && <Button title={'Scan again?'} onPress={resetScanner} color='tomato' />}
     </View>
   );
 }
 
-// Styles
+// Stylesheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -110,13 +131,14 @@ const styles = StyleSheet.create({
   },
   camera: {
     width: 300,
-    height: 300, 
+    height: 300,
     overflow: 'hidden',
     borderRadius: 30,
   },
   maintext: {
     fontSize: 16,
     margin: 20,
+    fontWeight: 'bold', // Make the scanned URL bold
   },
   barcodebox: {
     flex: 1,
