@@ -3,11 +3,52 @@ import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import {firebase} from "../../components/firebaseConfig"
 
 const RegisterPage = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+    const [name, setName] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [phoneno, setPhone] = useState(null);
+    const [password1, setPass1] = useState(null);
+    const [password2, setPass2] = useState(null);
+
+    const registerUser = async (name, email, phoneno, password1) => {
+        try {
+            //creating user 
+           await firebase.auth().createUserWithEmailAndPassword(email,password1)
+           const user =  firebase.auth().currentUser;
+           const userId = user.uid;
+           createUserCollection(userId,name,email,phoneno);
+            
+        } catch (error) {
+            alert('Error signing up:', error);
+        }
+
+
+    }
     
+    //user details storing
+    const createUserCollection = async (uid, name, email, phone) => {
+    try {
+        
+        firebase.firestore().collection("users").add({
+            name,
+            email,
+            phone,
+            uid
+          })
+
+    
+    } catch (error) {
+        
+        throw new Error('Error creating user collection:', error);
+        
+    }
+    }
+
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, marginHorizontal: 22 }}>
@@ -42,6 +83,9 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
+                            onChangeText={(e)=>{
+                                setName(e)
+                            }}
                         />
                     </View>
                 </View>
@@ -69,6 +113,9 @@ const RegisterPage = ({ navigation }) => {
                             keyboardType='email-address'
                             style={{
                                 width: "100%"
+                            }}
+                            onChangeText={(e)=>{
+                                setEmail(e)
                             }}
                         />
                     </View>
@@ -111,6 +158,9 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "80%"
                             }}
+                            onChangeText={(e)=>{
+                                setPhone(e)
+                            }}
                         />
                     </View>
                 </View>
@@ -138,6 +188,9 @@ const RegisterPage = ({ navigation }) => {
                             secureTextEntry={!isPasswordShown}
                             style={{
                                 width: "100%"
+                            }}
+                            onChangeText={(e)=>{
+                                setPass1(e)
                             }}
                         />
 
@@ -184,6 +237,9 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
+                            onChangeText={(e)=>{
+                                setPass2(e)
+                            }}
                         />
 
                         <TouchableOpacity
@@ -222,6 +278,7 @@ const RegisterPage = ({ navigation }) => {
                 <Button
                     title="Sign Up"
                     filled
+                    onPress={() => registerUser(name, email, phoneno, password1)}
                     style={{
                         marginTop: 10,
                         marginBottom: 4,
