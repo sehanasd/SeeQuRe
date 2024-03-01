@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox"
+import {firebase} from "../../components/firebaseConfig"
 
 
 
@@ -10,10 +11,46 @@ const Login = ({ navigation }) => {
 
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
 
     // const handleNavigation = () => {
     //     navigation.navigate("register");
     // };
+
+    const loginUser = async (email, password) => {
+        try {
+            if (!email || !password) {
+                throw new Error("Please provide both email and password.");
+            }
+            alert("Login user");
+            // Firebase authentication
+            const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+            // If successful, you might want to do something like redirecting the user to another page
+            // or updating the UI.
+            alert("Login successful: " + user.email);
+            // Example: window.location.href = "/dashboard";
+            // Alert.alert(
+            //     "Login Successful!",
+            //     `Welcome back, ${user.email}`,
+                
+            // );
+        } catch (error) {
+            let errorMessage = "An error occurred while logging in.";
+            
+            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+                errorMessage = "Invalid email or password. Please try again.";
+            } else if (error.code === "auth/invalid-email") {
+                errorMessage = "Invalid email address.";
+            }
+    
+            // Display error message to the user
+            console.error("Login error:", error);
+            alert(errorMessage);
+        }
+    }
+    
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -79,6 +116,9 @@ const Login = ({ navigation }) => {
                                 style={{
                                     width: "100%"
                                 }}
+                                onChangeText={(e)=>{
+                                    setEmail(e)
+                                }}
                             />
                         </View>
                     </View>
@@ -108,6 +148,9 @@ const Login = ({ navigation }) => {
                                 secureTextEntry={!isPasswordShown}
                                 style={{
                                     width: "100%"
+                                }}
+                                onChangeText={(e)=>{
+                                    setPassword(e)
                                 }}
                             />
 
