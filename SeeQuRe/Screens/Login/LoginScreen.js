@@ -196,6 +196,7 @@ const Login = ({ navigation }) => {
                             marginBottom: 4,
                             height: 40,
                         }}
+                        onPress={() => loginUser(email,password)}
                     />
 
                     <View style={{
