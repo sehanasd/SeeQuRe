@@ -72,13 +72,6 @@ export function ProfilePage() {
       <View style={styles.buttonWrapper}>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigation.navigate("changeUsername")}
-            title="Change Username"
-            color="#2f90d8"
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
             onPress={() => navigation.navigate("changePassword")}
             title="Change Password"
             color="#2f90d8"

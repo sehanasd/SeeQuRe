@@ -1,56 +1,47 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, Pressable, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox"
-import {firebase} from "../../components/firebaseConfig"
-
-
+import Checkbox from "expo-checkbox";
+import { firebase } from "../../components/firebaseConfig";
 
 const Login = ({ navigation }) => {
-
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    // const handleNavigation = () => {
-    //     navigation.navigate("register");
-    // };
-
-    const loginUser = async (email, password) => {
+    const loginUser = async (email, password, navigation) => {
         try {
             if (!email || !password) {
                 throw new Error("Please provide both email and password.");
             }
-            alert("Login user");
+
             // Firebase authentication
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
-            // If successful, you might want to do something like redirecting the user to another page
-            // or updating the UI.
-            alert("Login successful: " + user.email);
-            // Example: window.location.href = "/dashboard";
-            // Alert.alert(
-            //     "Login Successful!",
-            //     `Welcome back, ${user.email}`,
-                
-            // );
+
+            // Navigate to scanner page
+            navigation.navigate('main', { screen: 'scanner' });
+            
         } catch (error) {
             let errorMessage = "An error occurred while logging in.";
-            
+
             if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
                 errorMessage = "Invalid email or password. Please try again.";
             } else if (error.code === "auth/invalid-email") {
                 errorMessage = "Invalid email address.";
             }
-    
+
             // Display error message to the user
             console.error("Login error:", error);
             alert(errorMessage);
         }
-    }
-    
+    };
+
+    const handleLogin = async () => {
+        await loginUser(email, password, navigation);
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -77,7 +68,6 @@ const Login = ({ navigation }) => {
                     </Text>                           
                 </View>
 
-                {/* title and slogan */}
                 <View style={{ flex: 1, marginHorizontal: 22}}>
                     <View style={{ marginVertical: 10,  alignItems: 'center'}}>
                         <Text style={{
@@ -87,7 +77,6 @@ const Login = ({ navigation }) => {
                         }}>
                             Where Security Meets Simplicity
                         </Text>
-                        
                     </View>
 
                     <View style={{ marginBottom: 12 }}>
@@ -97,28 +86,13 @@ const Login = ({ navigation }) => {
                             marginVertical: 8
                         }}>Email address</Text>
 
-                        <View style={{
-                            width: "100%",
-                            height: 40,
-                            borderColor: COLORS.black,
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingLeft: 22
-                        }}>
-
-                            {/* Email text feild */}
+                        <View style={styles.inputContainer}>
                             <TextInput
                                 placeholder='Enter your email address'
                                 placeholderTextColor={COLORS.black}
                                 keyboardType='email-address'
-                                style={{
-                                    width: "100%"
-                                }}
-                                onChangeText={(e)=>{
-                                    setEmail(e)
-                                }}
+                                style={styles.input}
+                                onChangeText={(text) => setEmail(text)}
                             />
                         </View>
                     </View>
@@ -130,45 +104,19 @@ const Login = ({ navigation }) => {
                             marginVertical: 8
                         }}>Password</Text>
 
-                        <View style={{
-                            width: "100%",
-                            height: 40,
-                            borderColor: COLORS.black,
-                            borderWidth: 1,
-                            borderRadius: 8,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingLeft: 22
-                        }}>
-
-                            {/* password feild */}
+                        <View style={styles.inputContainer}>
                             <TextInput
                                 placeholder='Enter your password'
                                 placeholderTextColor={COLORS.black}
                                 secureTextEntry={!isPasswordShown}
-                                style={{
-                                    width: "100%"
-                                }}
-                                onChangeText={(e)=>{
-                                    setPassword(e)
-                                }}
+                                style={styles.input}
+                                onChangeText={(text) => setPassword(text)}
                             />
-
                             <TouchableOpacity
                                 onPress={() => setIsPasswordShown(!isPasswordShown)}
-                                style={{
-                                    position: "absolute",
-                                    right: 12
-                                }}
+                                style={styles.eyeIcon}
                             >
-                                {
-                                    isPasswordShown == true ? (
-                                        <Ionicons name="eye-off" size={24} color={COLORS.black} />
-                                    ) : (
-                                        <Ionicons name="eye" size={24} color={COLORS.black} />
-                                    )
-                                }
-
+                                <Ionicons name={isPasswordShown ? "eye-off" : "eye"} size={24} color={COLORS.black} />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -183,11 +131,9 @@ const Login = ({ navigation }) => {
                             onValueChange={setIsChecked}
                             color={isChecked ? COLORS.blue : undefined}
                         />
-
-                        <Text>Remenber Me</Text>
+                        <Text>Remember Me</Text>
                     </View>
 
-                    {/* login button */}
                     <Button
                         title="Sign In"
                         filled
@@ -196,7 +142,7 @@ const Login = ({ navigation }) => {
                             marginBottom: 4,
                             height: 40,
                         }}
-                        onPress={() => loginUser(email,password)}
+                        onPress={handleLogin}
                     />
 
                     <View style={{
@@ -210,11 +156,9 @@ const Login = ({ navigation }) => {
                     </View>
                 </View>
             </ScrollView>
-            
-            
         </SafeAreaView>
-    )
-}
+    );
+};
 
 const COLORS = {
     white: "#FFFFFF",
@@ -224,7 +168,7 @@ const COLORS = {
     blue: "#2f90d8",
     lightBlue: "#46a7e4",
     grey: "#CCCCCC"
-}
+};
 
 const Button = (props) => {
     const filledBgColor = props.color || COLORS.blue;
@@ -239,25 +183,15 @@ const Button = (props) => {
                 ...{ backgroundColor: bgColor },
                 ...props.style,
                 overflow: 'hidden'
-                
             }}
             onPress={props.onPress}
         >
             <Text style={{ fontSize: 16, ... { color: textColor } }}>{props.title}</Text>
         </TouchableOpacity>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
-    button: {
-        paddingBottom: 5,
-        paddingVertical: 5,
-        borderColor: COLORS.blue,
-        borderWidth: 1,
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
     logoText: {
         fontSize: 32,
         color: COLORS.black,
@@ -270,5 +204,32 @@ const styles = StyleSheet.create({
         color: COLORS.lightBlue, 
         fontWeight: 'bold',
     },
-})
-export default Login
+    inputContainer: {
+        width: "100%",
+        height: 40,
+        borderColor: COLORS.black,
+        borderWidth: 1,
+        borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingLeft: 22
+    },
+    input: {
+        width: "100%"
+    },
+    eyeIcon: {
+        position: "absolute",
+        right: 12
+    },
+    button: {
+        paddingBottom: 5,
+        paddingVertical: 5,
+        borderColor: COLORS.blue,
+        borderWidth: 1,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
+});
+
+export default Login;
