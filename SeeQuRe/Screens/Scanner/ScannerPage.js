@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StyleSheet, Button, Animated, Easing } from 'react-native';
-import { Camera } from 'expo-camera';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useEffect, useRef } from "react";
+import { Text, View, StyleSheet, Button, Animated, Easing } from "react-native";
+import { Camera } from "expo-camera";
+import { useFocusEffect } from "@react-navigation/native";
+import axios from "axios";
 
 export default function ScannerPage({ navigation }) {
   // State variables for camera permission, scanned status, and scanned URL
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [scannedUrl, setScannedUrl] = useState('Not yet scanned');
+  const [scannedUrl, setScannedUrl] = useState("Not yet scanned");
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
@@ -16,7 +17,7 @@ export default function ScannerPage({ navigation }) {
   useEffect(() => {
     const askForCameraPermission = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     };
 
     askForCameraPermission();
@@ -29,14 +30,21 @@ export default function ScannerPage({ navigation }) {
     }
   }, [scanned]);
 
-  // Handler function for barcode scanned event
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setScannedUrl(data);
-    console.log('Type: ' + type + '\nData: ' + data);
 
-    // Stop the scanning line animation
-    lineYPos.stopAnimation();
+    try {
+      const response = await axios
+        .post("http://127.0.0.1:5000/model_prediction", {
+          url: data,
+        })
+        .then(() => {
+          Alert.alert("Prediction Result", response.prediction);
+        });
+    } catch (error) {
+      console.error("Error sending scanned URL:", error);
+    }
   };
 
   // Function to start the scanning line animation
@@ -54,14 +62,14 @@ export default function ScannerPage({ navigation }) {
           duration: 0,
           useNativeDriver: false,
         }),
-      ]),
+      ])
     ).start();
   };
 
   // Function to reset the scanner state
   const resetScanner = () => {
     setScanned(false);
-    setScannedUrl('Not yet scanned');
+    setScannedUrl("Not yet scanned");
     // Restart the scanning line animation
     startLineAnimation();
   };
@@ -70,7 +78,7 @@ export default function ScannerPage({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       setScanned(false);
-      setScannedUrl('Not yet scanned');
+      setScannedUrl("Not yet scanned");
       startLineAnimation();
       return () => {
         lineYPos.stopAnimation();
@@ -91,7 +99,10 @@ export default function ScannerPage({ navigation }) {
     return (
       <View style={styles.container}>
         <Text style={{ margin: 10 }}>No access to camera</Text>
-        <Button title={'Allow Camera'} onPress={() => askForCameraPermission()} />
+        <Button
+          title={"Allow Camera"}
+          onPress={() => askForCameraPermission()}
+        />
       </View>
     );
   }
@@ -116,7 +127,9 @@ export default function ScannerPage({ navigation }) {
         </View>
       </Camera>
       <Text style={styles.maintext}>{scannedUrl}</Text>
-      {scanned && <Button title={'Scan again?'} onPress={resetScanner} color='tomato' />}
+      {scanned && (
+        <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
+      )}
     </View>
   );
 }
@@ -125,31 +138,31 @@ export default function ScannerPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   camera: {
     width: 300,
     height: 300,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: 30,
   },
   maintext: {
     fontSize: 16,
     margin: 20,
-    fontWeight: 'bold', // Make the scanned URL bold
+    fontWeight: "bold", // Make the scanned URL bold
   },
   barcodebox: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
   },
   scanningLine: {
-    position: 'absolute',
-    width: '100%',
+    position: "absolute",
+    width: "100%",
     height: 3,
-    backgroundColor: 'green',
+    backgroundColor: "green",
   },
 });
