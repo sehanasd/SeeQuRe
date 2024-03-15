@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Text, View, StyleSheet, Button, Animated, Easing } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  Animated,
+  Easing,
+  Alert,
+} from "react-native";
 import { Camera } from "expo-camera";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
@@ -36,11 +44,15 @@ export default function ScannerPage({ navigation }) {
 
     try {
       const response = await axios
-        .post("http://127.0.0.1:5000/model_prediction", {
+        .post("http://192.168.1.7:5001/model_prediction", {
           url: data,
         })
-        .then(() => {
-          Alert.alert("Prediction Result", response.prediction);
+        // .then(() => {
+        //   Alert.alert("Prediction Result", response.data.prediction);
+        // });
+        .then((response) => {
+          // Handling success
+          Alert.alert("Prediction Result", response.data.prediction);
         });
     } catch (error) {
       console.error("Error sending scanned URL:", error);
