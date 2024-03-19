@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { firebase } from "../../components/firebaseConfig";
+import { useSetAtom } from "jotai";
+import { userIdAtom } from '../userAtom';
+import { userNameAtom } from '../userAtom';
+import { userDocIdAtom } from '../userAtom';
 
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const setUserId = useSetAtom(userIdAtom);
+    const setUserName = useSetAtom(userNameAtom);
+    const setUserDocId = useSetAtom(userDocIdAtom);
     const loginUser = async (email, password, navigation) => {
         try {
             if (!email || !password) {
@@ -20,6 +26,20 @@ const Login = ({ navigation }) => {
             // Firebase authentication
             const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
             const user = userCredential.user;
+            const userUID = user.uid;       //user's UID
+            const userRef = firebase.firestore().collection('users');
+            const snapshot = await userRef.where('uid', '==', user.uid).get();
+            let userName  = '';
+            let userDocId = '';
+            
+            snapshot.forEach(doc => {
+                 userName = doc.data().name;
+                 userDocId = doc.id;
+             });
+
+            setUserName(userName);
+            setUserId(userUID);
+            setUserDocId(userDocId);
 
             // Navigate to scanner page
             navigation.navigate('main', { screen: 'scanner' });

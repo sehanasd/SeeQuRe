@@ -11,16 +11,22 @@ import {
 import { Camera } from "expo-camera";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import { useAtom } from "jotai";
+// import { userIdAtom } from '../userAtom';
+import { userDocIdAtom } from '../userAtom';
+import { firebase } from "../../components/firebaseConfig";
 
 export default function ScannerPage({ navigation }) {
   // State variables for camera permission, scanned status, and scanned URL
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [scannedUrl, setScannedUrl] = useState("Not yet scanned");
+  // const [userId] = useAtom(userIdAtom);
+  const [userDocId] = useAtom(userDocIdAtom);
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
-
+  
   // Request camera permission on component mount
   useEffect(() => {
     const askForCameraPermission = async () => {
@@ -44,16 +50,38 @@ export default function ScannerPage({ navigation }) {
 
     try {
       const response = await axios
-        .post("http://192.168.1.7:5001/model_prediction", {
+        .post("http://192.168.8.101:5001/model_prediction", {
           url: data,
         })
-        // .then(() => {
-        //   Alert.alert("Prediction Result", response.data.prediction);
-        // });
-        .then((response) => {
-          // Handling success
-          Alert.alert("Prediction Result", response.data.prediction);
+       
+        const pred_result = response.data.prediction;
+        Alert.alert("Prediction Result", pred_result);
+      
+        const collectionRef = firebase.firestore().collection('users');
+        const documentRef = collectionRef.doc(userDocId);
+        const docSnapshot = await documentRef.get();
+        const existingData = docSnapshot.data();
+
+        let updatedURLs;
+         if (existingData && existingData.URLs) {
+      
+      updatedURLs = {
+        ...existingData.URLs, 
+        [data]: pred_result 
+      };
+    } else {
+      
+      updatedURLs = {
+        [data]: pred_result
+      };
+    }
+
+        await documentRef.set({
+          ...existingData, 
+          URLs: updatedURLs 
         });
+        console.log('Document successfully written with URL prediction!');
+
     } catch (error) {
       console.error("Error sending scanned URL:", error);
     }
@@ -77,6 +105,8 @@ export default function ScannerPage({ navigation }) {
       ])
     ).start();
   };
+
+
 
   // Function to reset the scanner state
   const resetScanner = () => {

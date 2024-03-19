@@ -1,5 +1,8 @@
 import React from "react";
 import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert } from "react-native";
+import { useAtom } from "jotai";
+import { userIdAtom } from '../userAtom';
+
 
 const UrlHistory = () => {
     
@@ -15,7 +18,8 @@ const UrlHistory = () => {
         { id: 9, url: 'https://example.com/page9', malicious: true },
         { id: 10, url: 'https://example.com/page10', malicious: false },
     ];
-
+    const [userId] = useAtom(userIdAtom);
+    Alert.alert("User's ID from login-history: ", userId);
     const handleUrlPress = (url, isMalicious) => {
         if (isMalicious) {
             Alert.alert(

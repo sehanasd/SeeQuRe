@@ -7,8 +7,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
+  Text,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useAtom } from "jotai";
+import { userIdAtom } from '../userAtom';
+import { userNameAtom } from '../userAtom';
 
 // Import your avatar images
 import avatar1 from "../../assets/Avatars/avatar 1.png";
@@ -17,16 +22,21 @@ import avatar3 from "../../assets/Avatars/avatar 3.jpeg";
 import avatar4 from "../../assets/Avatars/avatar 4.jpeg";
 import avatar5 from "../../assets/Avatars/avatar 5.jpeg";
 
+
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
 const avatarSize = 150; 
 const avatarBorderRadius = 90; 
 const avatarOptionSize = 60; 
 
+
 export function ProfilePage() {
   const navigation = useNavigation();
   const [avatar, setAvatar] = useState(avatars[0]); 
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [userId] = useAtom(userIdAtom);
+  const [userName] = useAtom(userNameAtom);
+  Alert.alert("User's ID from login-profile: ", userId);
+  Alert.alert("Username from login-profile: ", userName);
   const changeAvatar = (newAvatar) => {
     setAvatar(newAvatar);
     setModalVisible(false);
@@ -37,6 +47,7 @@ export function ProfilePage() {
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Image source={avatar} style={styles.avatar} />
+        <Text style={styles.greetingText}>Hi, {userName}</Text>
       </TouchableOpacity>
 
       <Modal
@@ -135,7 +146,12 @@ const styles = StyleSheet.create({
     marginTop: 50,
     width: 250,
   },
-
+  greetingText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 10,
+    textAlign: "center",
+  },
   buttonContainer: {
     marginBottom: 20,
   },

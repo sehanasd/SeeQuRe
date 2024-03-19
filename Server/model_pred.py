@@ -9,6 +9,11 @@ def model_prediction():
     data = request.get_json()
     url = data['url']
 
+    if url.startswith("https://"):
+            url = url.split("https://", 1)[-1]
+    elif url.startswith("http://"):
+            url = url.split("http://", 1)[-1]
+
     features = main(url)
 
     prediction = get_prediction_from_url(url)
