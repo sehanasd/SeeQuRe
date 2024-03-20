@@ -35,8 +35,8 @@ export function ProfilePage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [userId] = useAtom(userIdAtom);
   const [userName] = useAtom(userNameAtom);
-  Alert.alert("User's ID from login-profile: ", userId);
-  Alert.alert("Username from login-profile: ", userName);
+  // Alert.alert("User's ID from login-profile: ", userId);
+  // Alert.alert("Username from login-profile: ", userName);
   const changeAvatar = (newAvatar) => {
     setAvatar(newAvatar);
     setModalVisible(false);

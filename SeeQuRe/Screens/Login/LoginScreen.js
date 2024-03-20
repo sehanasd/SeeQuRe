@@ -31,7 +31,7 @@ const Login = ({ navigation }) => {
             const snapshot = await userRef.where('uid', '==', user.uid).get();
             let userName  = '';
             let userDocId = '';
-            
+
             snapshot.forEach(doc => {
                  userName = doc.data().name;
                  userDocId = doc.id;
@@ -47,7 +47,7 @@ const Login = ({ navigation }) => {
         } catch (error) {
             let errorMessage = "An error occurred while logging in.";
 
-            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
                 errorMessage = "Invalid email or password. Please try again.";
             } else if (error.code === "auth/invalid-email") {
                 errorMessage = "Invalid email address.";

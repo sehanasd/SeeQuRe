@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
@@ -21,7 +21,7 @@ const RegisterPage = ({ navigation }) => {
            const user =  firebase.auth().currentUser;
            const userId = user.uid;
            createUserCollection(userId,name,email,phoneno);
-            
+            Alert.alert('User Successfully Created. Go to Login Page.')
         } catch (error) {
             alert('Error signing up:', error);
         }
