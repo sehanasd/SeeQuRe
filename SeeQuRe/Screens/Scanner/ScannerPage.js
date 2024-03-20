@@ -6,19 +6,22 @@ import {
   Button,
   Animated,
   Easing,
-  Alert,
+  TouchableOpacity,
+  Modal,
+  Linking,
 } from "react-native";
 import { Camera } from "expo-camera";
-import { useFocusEffect } from "@react-navigation/native";
+import { Link, useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+//import { color } from "react-native-elements/dist/helpers";
 
 export default function ScannerPage({ navigation }) {
-  // State variables for camera permission, scanned status, and scanned URL
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [scannedUrl, setScannedUrl] = useState("Not yet scanned");
+  const [responseState, setResponseState] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
 
   // Request camera permission on component mount
@@ -38,22 +41,27 @@ export default function ScannerPage({ navigation }) {
     }
   }, [scanned]);
 
+  const handleRedirect = () => {
+    Linking.openURL(scannedUrl);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setScannedUrl(data);
 
     try {
-      const response = await axios
-        .post("http://192.168.1.7:5001/model_prediction", {
+      const response = await axios.post(
+        "http://192.168.171.181:5001/model_prediction",
+        {
           url: data,
-        })
-        // .then(() => {
-        //   Alert.alert("Prediction Result", response.data.prediction);
-        // });
-        .then((response) => {
-          // Handling success
-          Alert.alert("Prediction Result", response.data.prediction);
-        });
+        }
+      );
+      setIsModalVisible(true);
+      setResponseState(response.data);
     } catch (error) {
       console.error("Error sending scanned URL:", error);
     }
@@ -142,12 +150,90 @@ export default function ScannerPage({ navigation }) {
       {scanned && (
         <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
       )}
+      {responseState && (
+        <Modal visible={isModalVisible} transparent={true} animationType="fade">
+          <TouchableOpacity disabled={true} style={styles.containerBox}>
+            <View style={styles.modal}>
+              <View style={styles.textView}>
+                <Text style={styles.text}>{responseState.prediction}</Text>
+                {responseState.prediction === "SAFE" ? (
+                  <Text style={styles.text}>
+                    This URL seems to be {responseState.prediction}. Do you want
+                    to continue ?
+                  </Text>
+                ) : (
+                  <Text style={styles.text}>
+                    This URL seems to be {responseState.prediction}. Do you want
+                    to continue ?
+                  </Text>
+                )}
+              </View>
+              <View style={styles.buttonView}>
+                <TouchableOpacity
+                  style={styles.touchableOpacity}
+                  onPress={handleModalClose}
+                >
+                  {responseState.prediction === "SAFE" ? (
+                    <Text style={[styles.text, { color: "black" }]}>
+                      Cancel
+                    </Text>
+                  ) : (
+                    <Text style={[styles.text, { color: "red" }]}>Block</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.touchableOpacity}
+                  onPress={handleRedirect}
+                >
+                  <Text style={[styles.text, { color: "green" }]}>
+                    Continue
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
     </View>
   );
 }
 
 // Stylesheet
 const styles = StyleSheet.create({
+  containerBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+  },
+  textView: {
+    alignItems: "center",
+  },
+
+  text: {
+    margin: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  buttonView: {
+    width: "100%",
+    flexDirection: "row",
+  },
+
+  touchableOpacity: {
+    flex: 1,
+    paddingVertical: 5,
+    alignItems: "center",
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#fff",
