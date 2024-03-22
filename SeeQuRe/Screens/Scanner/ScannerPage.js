@@ -6,10 +6,12 @@ import {
   Button,
   Animated,
   Easing,
-  Alert,
+  TouchableOpacity,
+  Modal,
+  Linking,
 } from "react-native";
 import { Camera } from "expo-camera";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, Link } from "@react-navigation/native";
 import axios from "axios";
 import { useAtom } from "jotai";
 // import { userIdAtom } from '../userAtom';
@@ -23,6 +25,8 @@ export default function ScannerPage({ navigation }) {
   const [scannedUrl, setScannedUrl] = useState("Not yet scanned");
   // const [userId] = useAtom(userIdAtom);
   const [userDocId] = useAtom(userDocIdAtom);
+  const [responseState, setResponseState] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
@@ -37,6 +41,14 @@ export default function ScannerPage({ navigation }) {
     askForCameraPermission();
   }, []);
 
+  const handleRedirect = () => {
+    Linking.openURL(scannedUrl);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+  };
+
   // Start the scanning line animation when the scanned state changes
   useEffect(() => {
     if (!scanned) {
@@ -50,13 +62,15 @@ export default function ScannerPage({ navigation }) {
 
     try {
       const response = await axios
-        .post("http://192.168.8.101:5001/model_prediction", {
+        .post("http://192.168.8.109:5001/model_prediction", {
           url: data,
         })
        
         const pred_result = response.data.prediction;
-        Alert.alert("Prediction Result", pred_result);
       
+        setIsModalVisible(true);
+        setResponseState(response.data);
+
         const collectionRef = firebase.firestore().collection('users');
         const documentRef = collectionRef.doc(userDocId);
         const docSnapshot = await documentRef.get();
@@ -172,12 +186,89 @@ export default function ScannerPage({ navigation }) {
       {scanned && (
         <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
       )}
+      {responseState && (
+        <Modal visible={isModalVisible} transparent={true} animationType="fade">
+          <TouchableOpacity disabled={true} style={styles.containerBox}>
+            <View style={styles.modal}>
+              <View style={styles.textView}>
+                <Text style={styles.text}>{responseState.prediction}</Text>
+                {responseState.prediction === "SAFE" ? (
+                  <Text style={styles.text}>
+                    This URL seems to be {responseState.prediction}. Do you want
+                    to continue ?
+                  </Text>
+                ) : (
+                  <Text style={styles.text}>
+                    This URL seems to be {responseState.prediction}. Do you want
+                    to continue ?
+                  </Text>
+                )}
+              </View>
+              <View style={styles.buttonView}>
+                <TouchableOpacity
+                  style={styles.touchableOpacity}
+                  onPress={handleModalClose}
+                >
+                  {responseState.prediction === "SAFE" ? (
+                    <Text style={[styles.text, { color: "black" }]}>
+                      Cancel
+                    </Text>
+                  ) : (
+                    <Text style={[styles.text, { color: "red" }]}>Block</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.touchableOpacity}
+                  onPress={handleRedirect}
+                >
+                  <Text style={[styles.text, { color: "green" }]}>
+                    Continue
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      )}
     </View>
   );
 }
 
 // Stylesheet
 const styles = StyleSheet.create({
+  containerBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modal: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+  },
+  textView: {
+    alignItems: "center",
+  },
+
+  text: {
+    margin: 5,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  buttonView: {
+    width: "100%",
+    flexDirection: "row",
+  },
+
+  touchableOpacity: {
+    flex: 1,
+    paddingVertical: 5,
+    alignItems: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
