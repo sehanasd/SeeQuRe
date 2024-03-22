@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,6 +17,8 @@ const Login = ({ navigation }) => {
     const setUserId = useSetAtom(userIdAtom);
     const setUserName = useSetAtom(userNameAtom);
     const setUserDocId = useSetAtom(userDocIdAtom);
+    const emailInputRef = useRef(null);
+    const passwordInputRef = useRef(null);
     const loginUser = async (email, password, navigation) => {
         try {
             if (!email || !password) {
@@ -41,7 +43,10 @@ const Login = ({ navigation }) => {
             setUserId(userUID);
             setUserDocId(userDocId);
 
-            // Navigate to scanner page
+            setEmail("");
+            setPassword("");
+            emailInputRef.current.clear();
+            passwordInputRef.current.clear();
             navigation.navigate('main', { screen: 'scanner' });
             
         } catch (error) {
@@ -108,6 +113,7 @@ const Login = ({ navigation }) => {
 
                         <View style={styles.inputContainer}>
                             <TextInput
+                                ref={emailInputRef}
                                 placeholder='Enter your email address'
                                 placeholderTextColor={COLORS.black}
                                 keyboardType='email-address'
@@ -126,6 +132,7 @@ const Login = ({ navigation }) => {
 
                         <View style={styles.inputContainer}>
                             <TextInput
+                                ref={passwordInputRef}
                                 placeholder='Enter your password'
                                 placeholderTextColor={COLORS.black}
                                 secureTextEntry={!isPasswordShown}

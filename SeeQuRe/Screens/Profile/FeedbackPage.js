@@ -10,6 +10,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { useAtom } from "jotai";
@@ -21,6 +22,7 @@ const FeedbackPage = () => {
   const [text, onChangeText] = useState("");
   const scrollViewRef = useRef();
   const [userDocId] = useAtom(userDocIdAtom);
+  const feedbacktxtRef = useRef(null);
 
   const submitFeedback = async() => {
     try{
@@ -46,7 +48,8 @@ const FeedbackPage = () => {
     feedbacks: updatedFBs 
   });
   console.log("Feedback Submitted:", { rating: checked, comments: text });
-  
+   Alert.alert("Feedback Submitted. Thank You."); 
+   feedbacktxtRef.current.clear();
     }catch (error){
       console.error("Error sending feedback :", error);
     }
@@ -113,6 +116,7 @@ const FeedbackPage = () => {
             </Text>
             <View style={styles.inputContainer}>
               <TextInput
+                ref = {feedbacktxtRef}
                 style={styles.input}
                 multiline
                 placeholder="Share your feedback, comments, and suggestions here..."
