@@ -18,7 +18,7 @@ def having_ip_address(url):
       
         return 0
 
-
+# wishmapython
 def abnormal_url(url):
     hostname = urlparse(url).hostname
     hostname = str(hostname)
@@ -191,7 +191,7 @@ def main(url):
 def get_prediction_from_url(test_url):
     features_test = main(test_url)
     features_test = np.array(features_test).reshape((1, -1))
-    load_model = joblib.load('Server/RFModel.joblib')
+    load_model = joblib.load('SeeQuRe/Server/RFModel.joblib')
     pred = load_model.predict(features_test)
     if int(pred[0]) == 0:
 

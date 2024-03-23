@@ -17,8 +17,8 @@ import { useAtom } from "jotai";
 import { userDocIdAtom } from '../userAtom';
 import { firebase } from "../../components/firebaseConfig";
 
-const FeedbackPage = () => {
-  const [checked, setChecked] = useState(false);
+const FeedbackPage = ({ onSubmit }) => {
+  const [checked, setChecked] = useState(null); // Initialize checked state to null
   const [text, onChangeText] = useState("");
   const scrollViewRef = useRef();
   const [userDocId] = useAtom(userDocIdAtom);
@@ -58,7 +58,16 @@ const FeedbackPage = () => {
 
   const handleOutsidePress = () => {
     Keyboard.dismiss();
-  };
+   };
+
+  const handleSubmit = () => {
+    // Do something with the feedback data, for example:
+    const feedbackData = {
+      rating: checked,
+      comment: text
+    };
+    onSubmit(feedbackData); // Call the onSubmit function with feedback data
+ };
 
   return (
     <TouchableWithoutFeedback onPress={handleOutsidePress}>
@@ -83,29 +92,34 @@ const FeedbackPage = () => {
               How did you feel about the service?
             </Text>
             <View style={styles.radioContainer}>
+            // Inside the FeedbackPage component's RadioButton components:
               <RadioButton
-                value="excellent"
-                status={checked === "excellent" ? "checked" : "unchecked"}
-                onPress={() => setChecked("excellent")}
+                value="opt1"
+                status={checked === "opt1" ? "checked" : "unchecked"}
+                onPress={() => setChecked("opt1")}
+                checked={checked === "opt1"} // Ensure the checked prop is set
                 color="#6FCF97"
-              />
+                testID="radio-opt1"
+             />
               <Text style={styles.radioText}> Excellent </Text>
             </View>
             <View style={styles.radioContainer}>
               <RadioButton
-                value="good"
-                status={checked === "good" ? "checked" : "unchecked"}
-                onPress={() => setChecked("good")}
+                value="opt2"
+                status={checked === "opt2" ? "checked" : "unchecked"}
+                onPress={() => setChecked("opt2")}
                 color="#FFD700"
+                testID="radio-opt2"
               />
               <Text style={styles.radioText}> Good </Text>
             </View>
             <View style={styles.radioContainer}>
               <RadioButton
-                value="average"
-                status={checked === "average" ? "checked" : "unchecked"}
-                onPress={() => setChecked("average")}
+                value="opt3"
+                status={checked === "opt3" ? "checked" : "unchecked"}
+                onPress={() => setChecked("opt3")}
                 color="#FF9F6F"
+                testID="radio-opt3"
               />
               <Text style={styles.radioText}> Average </Text>
             </View>
@@ -125,6 +139,7 @@ const FeedbackPage = () => {
                 onFocus={() =>
                   scrollViewRef.current.scrollTo({ y: 200, animated: true })
                 }
+                testID="comment-input"
               />
               <Text style={{ fontSize: 12, fontWeight: "bold" }}>
                 {" "}
@@ -134,8 +149,9 @@ const FeedbackPage = () => {
           </View>
           <TouchableOpacity
             style={styles.submitButton}
-            onPress={submitFeedback}
-          >
+            testID="submit-button"
+            onPress={handleSubmit} // Call handleSubmit function on button press
+         >
             <Text style={styles.submitButtonText}>Submit Feedback</Text>
           </TouchableOpacity>
         </ScrollView>
