@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +13,11 @@ const RegisterPage = ({ navigation }) => {
     const [phoneno, setPhone] = useState(null);
     const [password1, setPass1] = useState(null);
     const [password2, setPass2] = useState(null);
+    const emailInputRef = useRef(null);
+    const fullNameRef = useRef(null);
+    const password1InputRef = useRef(null);
+    const password2InputRef = useRef(null);
+    const phoneNoRef = useRef(null);
 
     const registerUser = async (name, email, phoneno, password1) => {
         try {
@@ -77,6 +82,7 @@ const RegisterPage = ({ navigation }) => {
                         paddingLeft: 22
                     }}>
                         <TextInput
+                            ref={fullNameRef}
                             placeholder='Enter your Full Name'
                             placeholderTextColor={COLORS.black}
                             keyboardType='email-address'
@@ -108,6 +114,7 @@ const RegisterPage = ({ navigation }) => {
                         paddingLeft: 22
                     }}>
                         <TextInput
+                            ref={emailInputRef}
                             placeholder='Enter your email address'
                             placeholderTextColor={COLORS.black}
                             keyboardType='email-address'
@@ -152,6 +159,7 @@ const RegisterPage = ({ navigation }) => {
                         />
 
                         <TextInput
+                            ref={phoneNoRef}
                             placeholder='Enter your phone number'
                             placeholderTextColor={COLORS.black}
                             keyboardType='numeric'
@@ -183,6 +191,7 @@ const RegisterPage = ({ navigation }) => {
                         paddingLeft: 22
                     }}>
                         <TextInput
+                            ref={password1InputRef}
                             placeholder='Enter your password'
                             placeholderTextColor={COLORS.black}
                             secureTextEntry={!isPasswordShown}
@@ -231,6 +240,7 @@ const RegisterPage = ({ navigation }) => {
                         paddingLeft: 22
                     }}>
                         <TextInput
+                            ref={password2InputRef}
                             placeholder='Re Enter your password'
                             placeholderTextColor={COLORS.black}
                             secureTextEntry={!isPasswordShown}

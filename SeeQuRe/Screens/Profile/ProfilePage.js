@@ -14,6 +14,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useAtom } from "jotai";
 import { userIdAtom } from '../userAtom';
 import { userNameAtom } from '../userAtom';
+import { firebase } from "../../components/firebaseConfig";
+import { userDocIdAtom } from '../userAtom';
+
 
 // Import your avatar images
 import avatar1 from "../../assets/Avatars/avatar 1.png";
@@ -35,11 +38,32 @@ export function ProfilePage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [userId] = useAtom(userIdAtom);
   const [userName] = useAtom(userNameAtom);
+  const nameArray = userName.split(" ");
+  const firstName = nameArray[0];
+  const [userDocId] = useAtom(userDocIdAtom);
   // Alert.alert("User's ID from login-profile: ", userId);
   // Alert.alert("Username from login-profile: ", userName);
   const changeAvatar = (newAvatar) => {
     setAvatar(newAvatar);
     setModalVisible(false);
+  };
+  const deleteAccount = () => {
+    const user = firebase.auth().currentUser;
+    deleteDocument(userDocId)
+    user.delete().then(() => {
+      Alert.alert('User deleted successfully.');
+      navigation.navigate("login"); 
+    }).catch((error) => {
+      console.error("Error deleting account:", error);
+    });
+  };
+  const deleteDocument = async (documentId) => {
+    try {
+      await firebase.firestore().collection('users').doc(documentId).delete();
+      console.log('Document successfully deleted!');
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    }
   };
 
   const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); 
@@ -47,6 +71,7 @@ export function ProfilePage() {
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)} testID="avatarButton">
         <Image source={avatar} style={styles.avatar} testID="avatar" />
+        <Text style={styles.greetingText}>Hi, {firstName}</Text>
       </TouchableOpacity>
 
       <Modal
@@ -104,6 +129,13 @@ export function ProfilePage() {
             title="Logout"
             color="#2f90d8"
             testID="logoutButton"
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={deleteAccount}
+            title="Delete Account"
+            color="#FF0000"
           />
         </View>
       </View>

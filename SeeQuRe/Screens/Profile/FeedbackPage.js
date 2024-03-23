@@ -10,6 +10,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { useAtom } from "jotai";
@@ -21,6 +22,39 @@ const FeedbackPage = ({ onSubmit }) => {
   const [text, onChangeText] = useState("");
   const scrollViewRef = useRef();
   const [userDocId] = useAtom(userDocIdAtom);
+  const feedbacktxtRef = useRef(null);
+
+  const submitFeedback = async() => {
+    try{
+        const collectionRef = firebase.firestore().collection('users');
+        const documentRef = collectionRef.doc(userDocId);
+        const docSnapshot = await documentRef.get();
+        const existingData = docSnapshot.data();
+        let updatedFBs;
+        if (existingData && existingData.feedbacks) {
+     
+        updatedFBs = {
+       ...existingData.feedbacks, 
+       [text]: checked 
+     };
+   } else {
+     
+    updatedFBs = {
+      [text]: checked 
+     };
+   }
+   await documentRef.set({
+    ...existingData, 
+    feedbacks: updatedFBs 
+  });
+  console.log("Feedback Submitted:", { rating: checked, comments: text });
+   Alert.alert("Feedback Submitted. Thank You."); 
+   feedbacktxtRef.current.clear();
+    }catch (error){
+      console.error("Error sending feedback :", error);
+    }
+    
+  };
 
   const handleOutsidePress = () => {
     Keyboard.dismiss();
@@ -96,6 +130,7 @@ const FeedbackPage = ({ onSubmit }) => {
             </Text>
             <View style={styles.inputContainer}>
               <TextInput
+                ref = {feedbacktxtRef}
                 style={styles.input}
                 multiline
                 placeholder="Share your feedback, comments, and suggestions here..."
