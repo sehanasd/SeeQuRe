@@ -29,21 +29,20 @@ const Login = ({ navigation }) => {
             const userUID = user.uid;       //user's UID
             const userRef = firebase.firestore().collection('users');
             const snapshot = await userRef.where('uid', '==', user.uid).get();
-            let userName  = '';
+            let userName = '';
             let userDocId = '';
 
             snapshot.forEach(doc => {
-                 userName = doc.data().name;
-                 userDocId = doc.id;
-             });
+                userName = doc.data().name;
+                userDocId = doc.id;
+            });
 
             setUserName(userName);
             setUserId(userUID);
             setUserDocId(userDocId);
 
-            // Navigate to scanner page
             navigation.navigate('main', { screen: 'scanner' });
-            
+
         } catch (error) {
             let errorMessage = "An error occurred while logging in.";
 
@@ -53,7 +52,6 @@ const Login = ({ navigation }) => {
                 errorMessage = "Invalid email address.";
             }
 
-            // Display error message to the user
             console.error("Login error:", error);
             alert(errorMessage);
         }
@@ -67,7 +65,7 @@ const Login = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={{ alignItems: 'center', marginTop: 70 }}>
-                    <Image 
+                    <Image
                         source={require("../../assets/SeeQuReLogo.png")}
                         style={{
                             height: 250,
@@ -78,18 +76,18 @@ const Login = ({ navigation }) => {
                     />
                 </View>
 
-                <View style={{ marginVertical: 0, alignItems: 'center', letterSpacing: 2}}>
+                <View style={{ marginVertical: 0, alignItems: 'center', letterSpacing: 2 }}>
                     <Text style={styles.logoText}>
                         See
-                    <Text style={styles.qText}>Q</Text>
-                    <Text>u</Text>
-                    <Text style={styles.rText}>R</Text>
+                        <Text style={styles.qText}>Q</Text>
+                        <Text>u</Text>
+                        <Text style={styles.rText}>R</Text>
                         e
-                    </Text>                           
+                    </Text>
                 </View>
 
-                <View style={{ flex: 1, marginHorizontal: 22}}>
-                    <View style={{ marginVertical: 10,  alignItems: 'center'}}>
+                <View style={{ flex: 1, marginHorizontal: 22 }}>
+                    <View style={{ marginVertical: 10, alignItems: 'center' }}>
                         <Text style={{
                             fontSize: 16,
                             marginVertical: 10,
@@ -113,6 +111,8 @@ const Login = ({ navigation }) => {
                                 keyboardType='email-address'
                                 style={styles.input}
                                 onChangeText={(text) => setEmail(text)}
+                                testID="email-input"
+                                value={email}
                             />
                         </View>
                     </View>
@@ -131,6 +131,8 @@ const Login = ({ navigation }) => {
                                 secureTextEntry={!isPasswordShown}
                                 style={styles.input}
                                 onChangeText={(text) => setPassword(text)}
+                                testID="password-input"
+                                value={password}
                             />
                             <TouchableOpacity
                                 onPress={() => setIsPasswordShown(!isPasswordShown)}
@@ -171,7 +173,7 @@ const Login = ({ navigation }) => {
                         alignItems: 'center',
                         marginVertical: 10
                     }}>
-                        <Text style={{ paddingTop: 6, fontSize: 16, color: COLORS.black, flex: 0.6, lineHeight: 15}}>Don't have an account ? </Text>
+                        <Text style={{ paddingTop: 6, fontSize: 16, color: COLORS.black, flex: 0.6, lineHeight: 15 }}>Don't have an account ? </Text>
                         <Button title="Register" onPress={() => navigation.navigate("register")} style={{ borderRadius: 0, borderWidth: 0, padding: 10, backgroundColor: 'transparent' }} />
                     </View>
                 </View>
@@ -217,11 +219,11 @@ const styles = StyleSheet.create({
         color: COLORS.black,
     },
     qText: {
-        color: COLORS.lightGreen, 
+        color: COLORS.lightGreen,
         fontWeight: 'bold',
     },
     rText: {
-        color: COLORS.lightBlue, 
+        color: COLORS.lightBlue,
         fontWeight: 'bold',
     },
     inputContainer: {

@@ -45,9 +45,8 @@ export function ProfilePage() {
   const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Image source={avatar} style={styles.avatar} />
-        <Text style={styles.greetingText}>Hi, {userName}</Text>
+      <TouchableOpacity onPress={() => setModalVisible(true)} testID="avatarButton">
+        <Image source={avatar} style={styles.avatar} testID="avatar" />
       </TouchableOpacity>
 
       <Modal
@@ -55,6 +54,7 @@ export function ProfilePage() {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
+        testID="modal"
       >
         <View style={styles.modalContainer}>
           <ScrollView horizontal={true}>
@@ -65,6 +65,7 @@ export function ProfilePage() {
                 <TouchableOpacity
                   key={index}
                   onPress={() => changeAvatar(avatarOption)}
+                  testID={`avatarOption${index}`}
                 >
                   <Image
                     source={avatarOption}
@@ -86,6 +87,7 @@ export function ProfilePage() {
             onPress={() => navigation.navigate("changePassword")}
             title="Change Password"
             color="#2f90d8"
+            testID="changePasswordButton"
           />
         </View>
         <View style={styles.buttonContainer}>
@@ -93,6 +95,7 @@ export function ProfilePage() {
             onPress={() => navigation.navigate("feedback")}
             title="Feedback"
             color="#2f90d8"
+            testID="feedbackButton"
           />
         </View>
         <View style={styles.buttonContainer}>
@@ -100,6 +103,7 @@ export function ProfilePage() {
             onPress={() => navigation.navigate("login")}
             title="Logout"
             color="#2f90d8"
+            testID="logoutButton"
           />
         </View>
       </View>
