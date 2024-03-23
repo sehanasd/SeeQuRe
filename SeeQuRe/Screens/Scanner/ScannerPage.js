@@ -62,7 +62,7 @@ export default function ScannerPage({ navigation }) {
 
     try {
       const response = await axios
-        .post("http://192.168.169.173:5001/model_prediction", {
+        .post("https://qr-server-bb897ad1539c.herokuapp.com/model_prediction", {
           url: data,
         })
        
