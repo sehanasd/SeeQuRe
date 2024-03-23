@@ -17,7 +17,6 @@ import { userNameAtom } from '../userAtom';
 import { firebase } from "../../components/firebaseConfig";
 import { userDocIdAtom } from '../userAtom';
 
-
 // Import your avatar images
 import avatar1 from "../../assets/Avatars/avatar 1.png";
 import avatar2 from "../../assets/Avatars/avatar 2.jpeg";
@@ -25,12 +24,10 @@ import avatar3 from "../../assets/Avatars/avatar 3.jpeg";
 import avatar4 from "../../assets/Avatars/avatar 4.jpeg";
 import avatar5 from "../../assets/Avatars/avatar 5.jpeg";
 
-
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
 const avatarSize = 150; 
 const avatarBorderRadius = 90; 
 const avatarOptionSize = 60; 
-
 
 export function ProfilePage() {
   const navigation = useNavigation();
@@ -38,15 +35,15 @@ export function ProfilePage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [userId] = useAtom(userIdAtom);
   const [userName] = useAtom(userNameAtom);
+  const [userDocId] = useAtom(userDocIdAtom);
   const nameArray = userName.split(" ");
   const firstName = nameArray[0];
-  const [userDocId] = useAtom(userDocIdAtom);
-  // Alert.alert("User's ID from login-profile: ", userId);
-  // Alert.alert("Username from login-profile: ", userName);
+
   const changeAvatar = (newAvatar) => {
     setAvatar(newAvatar);
     setModalVisible(false);
   };
+
   const deleteAccount = () => {
     const user = firebase.auth().currentUser;
     deleteDocument(userDocId)
@@ -57,6 +54,7 @@ export function ProfilePage() {
       console.error("Error deleting account:", error);
     });
   };
+
   const deleteDocument = async (documentId) => {
     try {
       await firebase.firestore().collection('users').doc(documentId).delete();
@@ -66,7 +64,17 @@ export function ProfilePage() {
     }
   };
 
+  const signOut = () => {
+    firebase.auth().signOut().then(() => {
+      console.log('Signed Out');
+      navigation.navigate("login");
+    }).catch((error) => {
+      console.error('Sign Out Error', error);
+    });
+  };
+
   const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); 
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)} testID="avatarButton">
@@ -125,7 +133,7 @@ export function ProfilePage() {
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => navigation.navigate("login")}
+            onPress={signOut} 
             title="Logout"
             color="#2f90d8"
             testID="logoutButton"
