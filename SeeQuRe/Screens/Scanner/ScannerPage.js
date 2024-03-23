@@ -62,7 +62,7 @@ export default function ScannerPage({ navigation }) {
 
     try {
       const response = await axios
-        .post("http://192.168.8.109:5001/model_prediction", {
+        .post("http://172.27.1.76:5002/model_prediction", {
           url: data,
         })
        
