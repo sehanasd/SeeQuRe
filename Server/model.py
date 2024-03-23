@@ -18,7 +18,7 @@ def having_ip_address(url):
       
         return 0
 
-
+# wishmapython
 def abnormal_url(url):
     hostname = urlparse(url).hostname
     hostname = str(hostname)
