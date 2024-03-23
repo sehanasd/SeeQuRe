@@ -44,6 +44,7 @@ export default function ScannerPage({ navigation }) {
   const handleRedirect = () => {
     Linking.openURL(scannedUrl);
   };
+  // sehange thatte
 
   const handleModalClose = () => {
     setIsModalVisible(false);
