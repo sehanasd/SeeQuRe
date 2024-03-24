@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -69,7 +70,7 @@ const RegisterPage = ({ navigation }) => {
                 errorMessage: "Passwords do not match."
             }
         ];
-    
+
         const invalidValidation = validations.find(validation => validation.condition);
         if (invalidValidation) {
             alert(invalidValidation.errorMessage);
@@ -87,7 +88,7 @@ const RegisterPage = ({ navigation }) => {
             const userId = user.uid;
             await createUserCollection(userId, name, email, phoneno);
             Alert.alert('User Successfully Created.');
-            navigation.navigate("login"); 
+            navigation.navigate("login");
         } catch (error) {
             console.error('Error signing up:', error);
             Alert.alert('Error', 'Failed to register. Please try again later.');
@@ -108,21 +109,21 @@ const RegisterPage = ({ navigation }) => {
         }
     };
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <SafeAreaView testID="registerPage" style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, marginHorizontal: 22 }}>
-                <View style={{ marginVertical: 10 , marginTop: 50, alignItems: "center"}}>
-                    <Text style={styles.title}>Register</Text>
-                    <Text style={styles.slogan}>Join SeeQuRe: Where Security Meets Simplicity</Text>
-                    
+                <View style={{ marginVertical: 10, marginTop: 50, alignItems: "center" }}>
+                    <Text testID="title" style={styles.title}>Register</Text>
+                    <Text testID="slogan" style={styles.slogan}>Join SeeQuRe: Where Security Meets Simplicity</Text>
+
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="createAccountSection">
                     <Text style={styles.subtitle}>Create Account</Text>
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
                         marginVertical: 8
-                    }}>Full Name</Text>
+                    }} testID="fullNameLabel">Full Name</Text>
 
                     <View style={{
                         width: "100%",
@@ -142,14 +143,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setName(e)
                             }}
+                            testID="fullNameInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="emailSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -174,14 +176,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setEmail(e)
                             }}
+                            testID="emailInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="phoneSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -219,14 +222,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "80%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPhone(e)
                             }}
+                            testID="phoneInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="passwordSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -251,9 +255,10 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPass1(e)
                             }}
+                            testID="passwordInput"
                         />
 
                         <TouchableOpacity
@@ -275,7 +280,7 @@ const RegisterPage = ({ navigation }) => {
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="confirmPasswordSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -300,9 +305,10 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPass2(e)
                             }}
+                            testID="confirmPasswordInput"
                         />
 
                         <TouchableOpacity
@@ -327,12 +333,13 @@ const RegisterPage = ({ navigation }) => {
                 <View style={{
                     flexDirection: 'row',
                     marginVertical: 6
-                }}>
+                }} testID="termsCheckboxSection">
                     <Checkbox
                         style={{ marginRight: 8 }}
                         value={isChecked}
                         onValueChange={setIsChecked}
                         color={isChecked ? COLORS.blue : undefined}
+                        testID="termsCheckbox"
                     />
 
                     <Text>I agree to the terms and conditions</Text>
@@ -347,6 +354,7 @@ const RegisterPage = ({ navigation }) => {
                         marginBottom: 4,
                         height: 40,
                     }}
+                    testID="signupButton"
                 />
 
                 <View style={{
@@ -356,7 +364,13 @@ const RegisterPage = ({ navigation }) => {
                     marginVertical: 10
                 }}>
                     <Text style={{ fontSize: 16, color: COLORS.black, flex: 0.6, lineHeight: 15, paddingTop: 6 }}>Already have an account ? </Text>
-                    <Button title="Login" onPress={() => navigation.navigate("login")} style={{ borderRadius: 0, borderWidth: 0, backgroundColor: 'transparent' }} />
+                    <Button
+                        title="Login"
+                        onPress={() => navigation.navigate("login")}
+                        testID="loginButton" // Add this testID
+                        style={{ borderRadius: 0, borderWidth: 0, backgroundColor: 'transparent' }}
+                    />
+
                 </View>
 
             </ScrollView>
@@ -365,6 +379,7 @@ const RegisterPage = ({ navigation }) => {
 }
 
 export default RegisterPage;
+
 
 const COLORS = {
     white: "#FFFFFF",
@@ -414,7 +429,7 @@ const styles = StyleSheet.create({
         marginVertical: 1,
         color: COLORS.black,
         marginBottom: 10,
-        
+
     },
     slogan: {
         fontSize: 16,
@@ -426,7 +441,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.black,
         fontWeight: "bold",
-        marginTop: 15 
+        marginTop: 15
     },
 
 })

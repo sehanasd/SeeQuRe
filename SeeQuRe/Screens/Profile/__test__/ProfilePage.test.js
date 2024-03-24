@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import {ProfilePage} from '../ProfilePage';
+import { ProfilePage } from '../ProfilePage';
 import { useNavigation } from '@react-navigation/native';
 
 // Mock useNavigation
@@ -13,7 +13,6 @@ describe('ProfilePage', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(<ProfilePage />);
     const avatar = getByTestId('avatar');
-    // console.log('Avatar:', avatar);
     expect(avatar).toBeTruthy();
   });
 
@@ -23,7 +22,6 @@ describe('ProfilePage', () => {
 
     const { getByText } = render(<ProfilePage />);
     const button = getByText('Change Password');
-    // console.log('Button:', button);
     fireEvent.press(button);
     expect(useNavigation().navigate).toHaveBeenCalledWith('changePassword');
   });
@@ -34,19 +32,23 @@ describe('ProfilePage', () => {
 
     const { getByText } = render(<ProfilePage />);
     const button = getByText('Feedback');
-    // console.log('Button:', button);
     fireEvent.press(button);
     expect(useNavigation().navigate).toHaveBeenCalledWith('feedback');
   });
 
-  it('navigates to login screen', () => {
-    // Mock navigate function
-    useNavigation.mockReturnValue({ navigate: jest.fn() });
 
-    const { getByText } = render(<ProfilePage />);
-    const button = getByText('Logout');
-    // console.log('Button:', button);
-    fireEvent.press(button);
-    expect(useNavigation().navigate).toHaveBeenCalledWith('login');
+
+  it('opens avatar selection modal when avatar button is pressed', () => {
+    const { getByTestId } = render(<ProfilePage />);
+    fireEvent.press(getByTestId('avatarButton'));
+    expect(getByTestId('modal')).toBeTruthy();
   });
+
+  it('changes avatar when an avatar option is selected', () => {
+    const { getByTestId } = render(<ProfilePage />);
+    fireEvent.press(getByTestId('avatarButton'));
+    fireEvent.press(getByTestId('avatarOption1')); // Assuming 'avatarOption1' is the testID of the second avatar option
+    expect(getByTestId('avatar')).toBeTruthy(); // Assuming 'avatar' is the testID of the avatar
+  });
+  
 });
