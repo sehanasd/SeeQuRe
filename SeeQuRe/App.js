@@ -10,6 +10,8 @@ import Scanner from './Screens/Scanner/ScannerPage';
 import RegisterPage from './Screens/Register/RegisterPage';
 import { ProfilePage } from './Screens/Profile/ProfilePage';
 import FeedbackPage from './Screens/Profile/FeedbackPage';
+import AboutUs from './Screens/AboutUs/AboutUsScreen';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,6 +58,7 @@ const MainTabNavigator = () => (
     <Tab.Screen name="urlHistory" component={UrlHistory} options={{headerShown:false}} />
     <Tab.Screen name="scanner" component={Scanner}  options={{headerShown:false}}  />
     <Tab.Screen name="profile" component={ProfileStack}  options={{headerShown:false}} />
+    <Tab.Screen name="aboutus" component={AboutUs}  options={{headerShown:false}} />
   </Tab.Navigator>
 );
 
