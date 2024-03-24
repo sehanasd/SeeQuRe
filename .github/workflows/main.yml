@@ -16,8 +16,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Install Firebase dependencies
         run: npm install firebase
-        working-directory: /home/runner/work/SeeQuRe/SeeQuRe/package-lock.json
+        
 
      
