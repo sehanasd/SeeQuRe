@@ -10,6 +10,7 @@ import {
   Modal,
   Linking,
   TextInput,
+  Alert,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { useFocusEffect, Link } from "@react-navigation/native";
@@ -54,6 +55,14 @@ export default function ScannerPage({ navigation }) {
 
   const handleModalClose = () => {
     setIsModalVisible(false);
+  };
+
+  const handleCheckUrl = async() => {
+    if (!inputUrl){
+      Alert.alert("Please Enter a URL")
+      return false;
+    }
+    await handleBarCodeScanned({ type: undefined, data: inputUrl });
   };
 
   // Start the scanning line animation when the scanned state changes
@@ -197,9 +206,12 @@ export default function ScannerPage({ navigation }) {
         onChangeText={setInputUrl}
         value={inputUrl}
         />
-        <Button title="Test URL" onPress={async () => {
-          await handleBarCodeScanned({ type: undefined, data: inputUrl });
-        }} />
+        <Button title="Check URL" 
+        // onPress={async () => {
+        //   await handleBarCodeScanned({ type: undefined, data: inputUrl });
+        // }} 
+        onPress={handleCheckUrl}
+        />
         {validationResult !== "" && (
         <Text style={styles.validationResult}>Validation Result: {validationResult}</Text>
         )}

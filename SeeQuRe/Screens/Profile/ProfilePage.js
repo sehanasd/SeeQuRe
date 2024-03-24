@@ -11,14 +11,13 @@ import {
   Text,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAtom } from "jotai";
 import { userIdAtom } from '../userAtom';
 import { userNameAtom } from '../userAtom';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-
+import { firebase } from "../../components/firebaseConfig";
 import { userDocIdAtom } from '../userAtom';
-
+import {AboutUs} from '../AboutUs/AboutUsScreen';
 
 
 // Import your avatar images
@@ -28,37 +27,38 @@ import avatar3 from "../../assets/Avatars/avatar 3.jpeg";
 import avatar4 from "../../assets/Avatars/avatar 4.jpeg";
 import avatar5 from "../../assets/Avatars/avatar 5.jpeg";
 
+
 const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5];
-const avatarSize = 150;
-const avatarBorderRadius = 90;
-const avatarOptionSize = 60;
+const avatarSize = 150; 
+const avatarBorderRadius = 90; 
+const avatarOptionSize = 60; 
+
 
 export function ProfilePage() {
   const navigation = useNavigation();
-  const [avatar, setAvatar] = useState(avatars[0]);
+  const [avatar, setAvatar] = useState(avatars[0]); 
   const [modalVisible, setModalVisible] = useState(false);
   const [userId] = useAtom(userIdAtom);
   const [userName] = useAtom(userNameAtom);
-  const [userDocId] = useAtom(userDocIdAtom);
   const nameArray = userName.split(" ");
   const firstName = nameArray[0];
-
+  const [userDocId] = useAtom(userDocIdAtom);
+  // Alert.alert("User's ID from login-profile: ", userId);
+  // Alert.alert("Username from login-profile: ", userName);
   const changeAvatar = (newAvatar) => {
     setAvatar(newAvatar);
     setModalVisible(false);
   };
-
   const deleteAccount = () => {
     const user = firebase.auth().currentUser;
     deleteDocument(userDocId)
     user.delete().then(() => {
       Alert.alert('User deleted successfully.');
-      navigation.navigate("login");
+      navigation.navigate("login"); 
     }).catch((error) => {
       console.error("Error deleting account:", error);
     });
   };
-
   const deleteDocument = async (documentId) => {
     try {
       await firebase.firestore().collection('users').doc(documentId).delete();
@@ -68,20 +68,18 @@ export function ProfilePage() {
     }
   };
 
-  const signOut = () => {
-    firebase.auth().signOut().then(() => {
-      console.log('Signed Out');
-      navigation.navigate("login");
-    }).catch((error) => {
-      console.error('Sign Out Error', error);
-    });
-  };
-
-  const avatarContainerWidth = avatars.length * (avatarOptionSize + 20);
-
+  const avatarContainerWidth = avatars.length * (avatarOptionSize + 20); 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)} testID="avatarButton">
+        <View style={styles.header}>
+          <MaterialCommunityIcons 
+            name="information-outline" 
+            size={24} 
+            color="black" 
+            onPress={() => navigation.navigate('About Us')} // Navigate to 'About Us' page
+          />
+        </View>
         <Image source={avatar} style={styles.avatar} testID="avatar" />
         <Text style={styles.greetingText}>Hi, {firstName}</Text>
       </TouchableOpacity>
@@ -137,7 +135,7 @@ export function ProfilePage() {
         </View>
         <View style={styles.buttonContainer}>
           <Button
-            onPress={signOut}
+            onPress={() => navigation.navigate("login")}
             title="Logout"
             color="#2f90d8"
             testID="logoutButton"
@@ -148,9 +146,7 @@ export function ProfilePage() {
             onPress={deleteAccount}
             title="Delete Account"
             color="#FF0000"
-            testID="deleteAccountButton" // Add testID attribute here
           />
-
         </View>
       </View>
     </View>
@@ -168,8 +164,8 @@ const styles = StyleSheet.create({
     width: avatarSize,
     height: avatarSize,
     borderRadius: avatarBorderRadius,
-    borderColor: "black",
-    borderWidth: 2,
+    borderColor: "black", 
+    borderWidth: 2, 
     marginBottom: 20,
   },
   modalContainer: {
@@ -180,7 +176,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: "rgba(0, 0, 0, 0)", 
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",

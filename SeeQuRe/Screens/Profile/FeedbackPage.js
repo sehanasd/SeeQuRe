@@ -92,7 +92,7 @@ const FeedbackPage = ({ onSubmit }) => {
               How did you feel about the service?
             </Text>
             <View style={styles.radioContainer}>
-            // Inside the FeedbackPage component's RadioButton components:
+            {/* Inside the FeedbackPage component's RadioButton components: */}
               <RadioButton
                 value="opt1"
                 status={checked === "opt1" ? "checked" : "unchecked"}
