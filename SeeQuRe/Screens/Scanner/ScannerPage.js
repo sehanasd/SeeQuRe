@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ScrollView } from 'react-native';
 import {
   Text,
   View,
@@ -33,7 +34,7 @@ export default function ScannerPage({ navigation }) {
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
-  
+
   // Request camera permission on component mount
   useEffect(() => {
     const askForCameraPermission = async () => {
@@ -69,36 +70,36 @@ export default function ScannerPage({ navigation }) {
         .post("https://qr-server-bb897ad1539c.herokuapp.com/model_prediction", {
           url: data,
         })
-       
-        const pred_result = response.data.prediction;
-      
-        setIsModalVisible(true);
-        setResponseState(response.data);
 
-        const collectionRef = firebase.firestore().collection('users');
-        const documentRef = collectionRef.doc(userDocId);
-        const docSnapshot = await documentRef.get();
-        const existingData = docSnapshot.data();
+      const pred_result = response.data.prediction;
 
-        let updatedURLs;
-         if (existingData && existingData.URLs) {
-      
-      updatedURLs = {
-        ...existingData.URLs, 
-        [data]: pred_result 
-      };
-    } else {
-      
-      updatedURLs = {
-        [data]: pred_result
-      };
-    }
+      setIsModalVisible(true);
+      setResponseState(response.data);
 
-        await documentRef.set({
-          ...existingData, 
-          URLs: updatedURLs 
-        });
-        console.log('Document successfully written with URL prediction!');
+      const collectionRef = firebase.firestore().collection('users');
+      const documentRef = collectionRef.doc(userDocId);
+      const docSnapshot = await documentRef.get();
+      const existingData = docSnapshot.data();
+
+      let updatedURLs;
+      if (existingData && existingData.URLs) {
+
+        updatedURLs = {
+          ...existingData.URLs,
+          [data]: pred_result
+        };
+      } else {
+
+        updatedURLs = {
+          [data]: pred_result
+        };
+      }
+
+      await documentRef.set({
+        ...existingData,
+        URLs: updatedURLs
+      });
+      console.log('Document successfully written with URL prediction!');
 
     } catch (error) {
       console.error("Error sending scanned URL:", error);
@@ -169,89 +170,102 @@ export default function ScannerPage({ navigation }) {
 
   // Render camera view, scanning line, scanned URL, and scan again button
   return (
-    <View style={styles.container}>
-      <Camera
-        style={styles.camera}
-        type={Camera.Constants.Type.back}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      >
-        <View style={styles.barcodebox}>
-          <Animated.View
-            style={[
-              styles.scanningLine,
-              {
-                transform: [{ translateY: lineYPos }],
-              },
-            ]}
-          />
-        </View>
-      </Camera>
+    <ScrollView
+      contentContainerStyle={styles.scrollViewContent}
+      keyboardShouldPersistTaps="handled">
+      <View style={styles.container}>
+        <Camera
+          style={styles.camera}
+          type={Camera.Constants.Type.back}
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        >
+          <View style={styles.barcodebox}>
+            <Animated.View
+              style={[
+                styles.scanningLine,
+                {
+                  transform: [{ translateY: lineYPos }],
+                },
+              ]}
+            />
+          </View>
+        </Camera>
         <TextInput
-        style={styles.input}
-        placeholder="Enter URL"
-        onChangeText={setInputUrl}
-        value={inputUrl}
+          style={styles.input}
+          placeholder="Enter URL"
+          onChangeText={setInputUrl}
+          value={inputUrl}
         />
-        <Button title="Test URL" onPress={async () => {
-          await handleBarCodeScanned({ type: undefined, data: inputUrl });
-        }} />
+        <Button
+          title="Test URL"
+          onPress={async () => {
+            await handleBarCodeScanned({ type: undefined, data: inputUrl });
+          }}
+        />
         {validationResult !== "" && (
-        <Text style={styles.validationResult}>Validation Result: {validationResult}</Text>
+          <Text style={styles.validationResult}>
+            Validation Result: {validationResult}
+          </Text>
         )}
-      <Text style={styles.maintext}>{scannedUrl}</Text>
-      {scanned && (
-        <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
-      )}
-      {responseState && (
-        <Modal visible={isModalVisible} transparent={true} animationType="fade">
-          <TouchableOpacity disabled={true} style={styles.containerBox}>
-            <View style={styles.modal}>
-              <View style={styles.textView}>
-                <Text style={styles.text}>{responseState.prediction}</Text>
-                {responseState.prediction === "SAFE" ? (
+        <Text style={styles.maintext}>{scannedUrl}</Text>
+        {scanned && (
+          <Button
+            title={"Scan again?"}
+            onPress={resetScanner}
+            color="tomato"
+          />
+        )}
+        {responseState && (
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="fade"
+          >
+            <TouchableOpacity
+              disabled={true}
+              style={styles.containerBox}
+            >
+              <View style={styles.modal}>
+                <View style={styles.textView}>
                   <Text style={styles.text}>
-                    This URL seems to be {responseState.prediction}. Do you want
-                    to continue ?
+                    {responseState.prediction}
                   </Text>
-                ) : (
                   <Text style={styles.text}>
-                    This URL seems to be {responseState.prediction}. Do you want
-                    to continue ?
+                    This URL seems to be {responseState.prediction}. Do you want to continue ?
                   </Text>
-                )}
+                </View>
+                <View style={styles.buttonView}>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Cancel"
+                      color="black"
+                      onPress={handleModalClose}
+                    />
+                  </View>
+                  <View style={styles.buttonContainer}>
+                    <Button
+                      title="Continue"
+                      color="green"
+                      onPress={handleRedirect}
+                    />
+                  </View>
+                </View>
               </View>
-              <View style={styles.buttonView}>
-                <TouchableOpacity
-                  style={styles.touchableOpacity}
-                  onPress={handleModalClose}
-                >
-                  {responseState.prediction === "SAFE" ? (
-                    <Text style={[styles.text, { color: "black" }]}>
-                      Cancel
-                    </Text>
-                  ) : (
-                    <Text style={[styles.text, { color: "red" }]}>Block</Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.touchableOpacity}
-                  onPress={handleRedirect}
-                >
-                  <Text style={[styles.text, { color: "green" }]}>
-                    Continue
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      )}
-    </View>
+            </TouchableOpacity>
+          </Modal>
+        )}
+      </View>
+    </ScrollView>
   );
 }
 
 // Stylesheet
 const styles = StyleSheet.create({
+
+  scrollViewContent: {
+    flexGrow: 1,
+  },
+
   containerBox: {
     flex: 1,
     justifyContent: "center",
@@ -321,10 +335,19 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 20,
     width: "80%",
-    },
-    validationResult: {
+  },
+  validationResult: {
     marginVertical: 10,
     fontSize: 16,
     fontWeight: "bold",
-    },
+  },
+  buttonView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  buttonContainer: {
+    flex: 1,
+    marginHorizontal: 10,
+  }
 });
