@@ -14,13 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
+        working-directory: Server/package.json
         run: npm install
 
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install Firebase dependencies
-        run: npm install firebase
-        
+   
 
      
