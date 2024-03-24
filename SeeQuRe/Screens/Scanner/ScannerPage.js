@@ -191,7 +191,7 @@ export default function ScannerPage({ navigation }) {
         onChangeText={setInputUrl}
         value={inputUrl}
         />
-        <Button title="Test URL" onPress={async () => {
+        <Button title="Check URL" onPress={async () => {
           await handleBarCodeScanned({ type: undefined, data: inputUrl });
         }} />
         {validationResult !== "" && (
@@ -202,44 +202,39 @@ export default function ScannerPage({ navigation }) {
         <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
       )}
       {responseState && (
-        <Modal visible={isModalVisible} transparent={true} animationType="fade">
-          <TouchableOpacity disabled={true} style={styles.containerBox}>
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="fade"
+        >
+          <TouchableOpacity
+            disabled={true}
+            style={styles.containerBox}
+          >
             <View style={styles.modal}>
               <View style={styles.textView}>
-                <Text style={styles.text}>{responseState.prediction}</Text>
-                {responseState.prediction === "SAFE" ? (
-                  <Text style={styles.text}>
-                    This URL seems to be {responseState.prediction}. Do you want
-                    to continue ?
-                  </Text>
-                ) : (
-                  <Text style={styles.text}>
-                    This URL seems to be {responseState.prediction}. Do you want
-                    to continue ?
-                  </Text>
-                )}
+                <Text style={styles.text}>
+                  {responseState.prediction}
+                </Text>
+                <Text style={styles.text}>
+                  This URL seems to be {responseState.prediction}. Do you want to continue ?
+                </Text>
               </View>
               <View style={styles.buttonView}>
-                <TouchableOpacity
-                  style={styles.touchableOpacity}
-                  onPress={handleModalClose}
-                >
-                  {responseState.prediction === "SAFE" ? (
-                    <Text style={[styles.text, { color: "black" }]}>
-                      Cancel
-                    </Text>
-                  ) : (
-                    <Text style={[styles.text, { color: "red" }]}>Block</Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.touchableOpacity}
-                  onPress={handleRedirect}
-                >
-                  <Text style={[styles.text, { color: "green" }]}>
-                    Continue
-                  </Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Cancel"
+                    color="black"
+                    onPress={handleModalClose}
+                  />
+                </View>
+                <View style={styles.buttonContainer}>
+                  <Button
+                    title="Continue"
+                    color="green"
+                    onPress={handleRedirect}
+                  />
+                </View>
               </View>
             </View>
           </TouchableOpacity>
@@ -325,5 +320,21 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     fontSize: 16,
     fontWeight: "bold",
+    },
+    modal: {
+      backgroundColor: "white",
+      padding: 10,
+      borderRadius: 10,
+      width: "80%",
+      alignItems: "center",
+    },
+    textView: {
+      alignItems: "center",
+    },
+  
+    text: {
+      margin: 5,
+      fontSize: 16,
+      fontWeight: "bold",
     },
 });

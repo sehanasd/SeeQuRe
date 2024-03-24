@@ -11,11 +11,13 @@ import {
   Text,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAtom } from "jotai";
 import { userIdAtom } from '../userAtom';
 import { userNameAtom } from '../userAtom';
 import { firebase } from "../../components/firebaseConfig";
 import { userDocIdAtom } from '../userAtom';
+import {AboutUs} from '../AboutUs/AboutUsScreen';
 
 
 // Import your avatar images
@@ -70,6 +72,14 @@ export function ProfilePage() {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => setModalVisible(true)} testID="avatarButton">
+        <View style={styles.header}>
+          <MaterialCommunityIcons 
+            name="information-outline" 
+            size={24} 
+            color="black" 
+            onPress={() => navigation.navigate('About Us')} // Navigate to 'About Us' page
+          />
+        </View>
         <Image source={avatar} style={styles.avatar} testID="avatar" />
         <Text style={styles.greetingText}>Hi, {firstName}</Text>
       </TouchableOpacity>

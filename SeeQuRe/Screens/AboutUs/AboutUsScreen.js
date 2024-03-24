@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 
-const AboutUs = () => {
+const AboutUs = (nav) => {
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <Text style={styles.logoText}>See
@@ -27,21 +27,6 @@ const AboutUs = () => {
           <Text style={styles.description4}>Thank you for choosing SeeQuRe!</Text>
       </View>
 
-      {/* <View style={styles.developerContainer}>
-        <View style={styles.developer}>
-          <Text style={styles.developerDescription}>
-            Development Team: 
-          </Text>
-          <View style={styles.dd}>
-                <Text style={styles.dnames}>Tharuka Gamage</Text>
-                <Text style={styles.dnames}>Wishma Pathirage</Text>
-                <Text style={styles.dnames}>Thanuja Gamage</Text>
-                <Text style={styles.dnames}>Shanuka Himsara</Text>
-                <Text style={styles.dnames}>Sehan Damsri</Text>
-            </View>
-        </View>
-
-      </View> */}
       <Text style={styles.version}>Version 1.0.0</Text>
     </ScrollView>
   );

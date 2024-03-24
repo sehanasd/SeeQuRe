@@ -44,6 +44,7 @@ const App = () => {
         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="register" component={RegisterPage} />
         <Stack.Screen name="main" component={MainTabNavigator} />
+        <Stack.Screen name="About Us" component={AboutUs} />
 
       </Stack.Navigator>
     </NavigationContainer>
@@ -63,8 +64,6 @@ const MainTabNavigator = () => (
           iconName = 'account';
         } else if (route.name === 'URLHistory') {
           iconName = 'history';
-        }else if (route.name === 'About Us') {
-          iconName = 'cog';
         }
 
         return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
@@ -74,7 +73,6 @@ const MainTabNavigator = () => (
     <Tab.Screen name="URLHistory" component={UrlHistory} options={{headerShown:false}} />
     <Tab.Screen name="Scanner" component={Scanner}  options={{headerShown:false}}  />
     <Tab.Screen name="Profile" component={ProfileStack}  options={{headerShown:false}} />
-    <Tab.Screen name="About Us" component={AboutUs}  options={{headerShown:false}} />
   </Tab.Navigator>
 );
 
