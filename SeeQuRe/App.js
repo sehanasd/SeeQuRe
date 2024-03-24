@@ -12,6 +12,7 @@ import RegisterPage from './Screens/Register/RegisterPage';
 import { ProfilePage } from './Screens/Profile/ProfilePage';
 import FeedbackPage from './Screens/Profile/FeedbackPage';
 import SeeQuRe from './Screens/Landing/Landing';
+import AboutUs from './Screens/AboutUs/AboutUsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,21 +57,24 @@ const MainTabNavigator = () => (
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'scanner') {
+        if (route.name === 'Scanner') {
           iconName = 'line-scan';
-        } else if (route.name === 'profile') {
+        } else if (route.name === 'Profile') {
           iconName = 'account';
-        } else if (route.name === 'urlHistory') {
+        } else if (route.name === 'URLHistory') {
           iconName = 'history';
+        }else if (route.name === 'About Us') {
+          iconName = 'cog';
         }
 
         return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
       },
     })}
   >
-    <Tab.Screen name="urlHistory" component={UrlHistory} options={{headerShown:false}} />
-    <Tab.Screen name="scanner" component={Scanner}  options={{headerShown:false}}  />
-    <Tab.Screen name="profile" component={ProfileStack}  options={{headerShown:false}} />
+    <Tab.Screen name="URLHistory" component={UrlHistory} options={{headerShown:false}} />
+    <Tab.Screen name="Scanner" component={Scanner}  options={{headerShown:false}}  />
+    <Tab.Screen name="Profile" component={ProfileStack}  options={{headerShown:false}} />
+    <Tab.Screen name="About Us" component={AboutUs}  options={{headerShown:false}} />
   </Tab.Navigator>
 );
 
