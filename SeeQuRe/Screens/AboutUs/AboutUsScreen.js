@@ -1,9 +1,17 @@
 import React from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, StyleSheet, Button } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
+// const Stack = createStackNavigator();
 const AboutUs = () => {
+
+  const navigation = useNavigation();
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+      <View style={styles.navigationBar}>
+        <Button title="Back" onPress={() => navigation.goBack()} />
+      </View>
       <Text style={styles.logoText}>See
         <Text style={styles.qText}>Q</Text>
         <Text>u</Text>
@@ -126,29 +134,11 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     marginTop: 245,
   },
-
-//   developerContainer: {
-//     width: "90%",
-//     marginBottom: 20,
-//   },
-//   developer: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     marginBottom: 10,
-//   },
-//   developerDescription: {
-//     fontSize: 16,
-//     color: COLORS.black,
-//     marginBottom: 20,
-//   },
-//   dnames: {
-//     marginLeft: 15,
-//     fontSize: 16,
-
-//   },
-//   dd: {
-//     marginTop: 60,
-//   }
+  navigationBar: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+  }
 });
 
 
