@@ -1,0 +1,25 @@
+name: React Native CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install firebase
+        run: npm install firebase
+
+      - name: Install Jotai
+        run: npm install -i jotai
+
+     
