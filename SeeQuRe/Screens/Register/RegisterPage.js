@@ -1,75 +1,129 @@
+
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
-import {firebase} from "../../components/firebaseConfig"
+import { firebase } from "../../components/firebaseConfig";
 
 const RegisterPage = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
-    const [name, setName] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [phoneno, setPhone] = useState(null);
-    const [password1, setPass1] = useState(null);
-    const [password2, setPass2] = useState(null);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phoneno, setPhone] = useState("");
+    const [password1, setPass1] = useState("");
+    const [password2, setPass2] = useState("");
     const emailInputRef = useRef(null);
     const fullNameRef = useRef(null);
     const password1InputRef = useRef(null);
     const password2InputRef = useRef(null);
     const phoneNoRef = useRef(null);
 
-    const registerUser = async (name, email, phoneno, password1) => {
-        try {
-            //creating user 
-           await firebase.auth().createUserWithEmailAndPassword(email,password1)
-           const user =  firebase.auth().currentUser;
-           const userId = user.uid;
-           createUserCollection(userId,name,email,phoneno);
-            Alert.alert('User Successfully Created. Go to Login Page.')
-        } catch (error) {
-            alert('Error signing up:', error);
+    const validateName = (name) => {
+        // Regular expression for name validation
+        const nameRegex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/;
+        return nameRegex.test(name);
+    };
+
+    const validateEmail = (email) => {
+        // Regular expression for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePhoneNumber = (phone) => {
+        // Regular expression for phone number validation
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phone);
+    };
+
+    const validatePassword = (password) => {
+        // Password should be at least 6 characters long
+        return password.length >= 6;
+    };
+
+    const validateInput = () => {
+        const validations = [
+            {
+                condition: !name || !email || !phoneno || !password1 || !password2,
+                errorMessage: "Please fill in all fields."
+            },
+            {
+                condition: !validateName(name),
+                errorMessage: "Invalid name. Name cannot contain numbers or special characters."
+            },
+            {
+                condition: !validateEmail(email),
+                errorMessage: "Invalid email address."
+            },
+            {
+                condition: !validatePhoneNumber(phoneno),
+                errorMessage: "Invalid phone number."
+            },
+            {
+                condition: !validatePassword(password1),
+                errorMessage: "Password should be at least 6 characters long."
+            },
+            {
+                condition: password1 !== password2,
+                errorMessage: "Passwords do not match."
+            }
+        ];
+
+        const invalidValidation = validations.find(validation => validation.condition);
+        if (invalidValidation) {
+            alert(invalidValidation.errorMessage);
+            return false;
         }
+        return true;
+    };
+    const registerUser = async () => {
+        if (!validateInput()) {
+            return;
+        }
+        try {
+            await firebase.auth().createUserWithEmailAndPassword(email, password1);
+            const user = firebase.auth().currentUser;
+            const userId = user.uid;
+            await createUserCollection(userId, name, email, phoneno);
+            Alert.alert('User Successfully Created.');
+            navigation.navigate("login");
+        } catch (error) {
+            console.error('Error signing up:', error);
+            Alert.alert('Error', 'Failed to register. Please try again later.');
+        }
+    };
 
-
-    }
-    
-    //user details storing
     const createUserCollection = async (uid, name, email, phone) => {
-    try {
-        
-        firebase.firestore().collection("users").add({
-            name,
-            email,
-            phone,
-            uid
-          })
-
-    
-    } catch (error) {
-        
-        throw new Error('Error creating user collection:', error);
-        
-    }
-    }
-
-
+        try {
+            await firebase.firestore().collection("users").add({
+                name,
+                email,
+                phone,
+                uid
+            });
+        } catch (error) {
+            console.error('Error creating user collection:', error);
+            throw new Error('Error creating user collection:', error);
+        }
+    };
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <SafeAreaView testID="registerPage" style={{ flex: 1, backgroundColor: COLORS.white }}>
             <ScrollView contentContainerStyle={{ flexGrow: 1, marginHorizontal: 22 }}>
-                <View style={{ marginVertical: 10 , marginTop: 50, alignItems: "center"}}>
-                    <Text style={styles.title}>Register</Text>
-                    <Text style={styles.slogan}>Join SeeQuRe: Where Security Meets Simplicity</Text>
-                    
+                <View style={{ marginVertical: 10, marginTop: 50, alignItems: "center" }}>
+                    <Text testID="title" style={styles.title}>Register</Text>
+                    <Text testID="slogan" style={styles.slogan}>Join SeeQuRe: Where Security Meets Simplicity</Text>
+
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="createAccountSection">
                     <Text style={styles.subtitle}>Create Account</Text>
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
                         marginVertical: 8
-                    }}>Full Name</Text>
+                    }} testID="fullNameLabel">Full Name</Text>
 
                     <View style={{
                         width: "100%",
@@ -89,14 +143,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setName(e)
                             }}
+                            testID="fullNameInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="emailSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -121,14 +176,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setEmail(e)
                             }}
+                            testID="emailInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="phoneSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -166,14 +222,15 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "80%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPhone(e)
                             }}
+                            testID="phoneInput"
                         />
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="passwordSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -198,9 +255,10 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPass1(e)
                             }}
+                            testID="passwordInput"
                         />
 
                         <TouchableOpacity
@@ -222,7 +280,7 @@ const RegisterPage = ({ navigation }) => {
                     </View>
                 </View>
 
-                <View style={{ marginBottom: 12 }}>
+                <View style={{ marginBottom: 12 }} testID="confirmPasswordSection">
                     <Text style={{
                         fontSize: 14,
                         fontWeight: 400,
@@ -247,9 +305,10 @@ const RegisterPage = ({ navigation }) => {
                             style={{
                                 width: "100%"
                             }}
-                            onChangeText={(e)=>{
+                            onChangeText={(e) => {
                                 setPass2(e)
                             }}
+                            testID="confirmPasswordInput"
                         />
 
                         <TouchableOpacity
@@ -274,12 +333,13 @@ const RegisterPage = ({ navigation }) => {
                 <View style={{
                     flexDirection: 'row',
                     marginVertical: 6
-                }}>
+                }} testID="termsCheckboxSection">
                     <Checkbox
                         style={{ marginRight: 8 }}
                         value={isChecked}
                         onValueChange={setIsChecked}
                         color={isChecked ? COLORS.blue : undefined}
+                        testID="termsCheckbox"
                     />
 
                     <Text>I agree to the terms and conditions</Text>
@@ -294,9 +354,8 @@ const RegisterPage = ({ navigation }) => {
                         marginBottom: 4,
                         height: 40,
                     }}
+                    testID="signupButton"
                 />
-
-               
 
                 <View style={{
                     flexDirection: "row",
@@ -305,7 +364,13 @@ const RegisterPage = ({ navigation }) => {
                     marginVertical: 10
                 }}>
                     <Text style={{ fontSize: 16, color: COLORS.black, flex: 0.6, lineHeight: 15, paddingTop: 6 }}>Already have an account ? </Text>
-                    <Button title="Login" onPress={() => navigation.navigate("login")} style={{ borderRadius: 0, borderWidth: 0, backgroundColor: 'transparent' }} />
+                    <Button
+                        title="Login"
+                        onPress={() => navigation.navigate("login")}
+                        testID="loginButton" // Add this testID
+                        style={{ borderRadius: 0, borderWidth: 0, backgroundColor: 'transparent' }}
+                    />
+
                 </View>
 
             </ScrollView>
@@ -314,6 +379,7 @@ const RegisterPage = ({ navigation }) => {
 }
 
 export default RegisterPage;
+
 
 const COLORS = {
     white: "#FFFFFF",
@@ -363,7 +429,7 @@ const styles = StyleSheet.create({
         marginVertical: 1,
         color: COLORS.black,
         marginBottom: 10,
-        
+
     },
     slogan: {
         fontSize: 16,
@@ -375,7 +441,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.black,
         fontWeight: "bold",
-        marginTop: 15 
+        marginTop: 15
     },
 
 })
