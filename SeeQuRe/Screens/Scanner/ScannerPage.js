@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Modal,
   Linking,
+  TextInput,
 } from "react-native";
 import { Camera } from "expo-camera";
 import { useFocusEffect, Link } from "@react-navigation/native";
@@ -27,6 +28,8 @@ export default function ScannerPage({ navigation }) {
   const [userDocId] = useAtom(userDocIdAtom);
   const [responseState, setResponseState] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [inputUrl, setInputUrl] = useState("");
+  const [validationResult, setValidationResult] = useState("");
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
@@ -182,6 +185,18 @@ export default function ScannerPage({ navigation }) {
           />
         </View>
       </Camera>
+        <TextInput
+        style={styles.input}
+        placeholder="Enter URL"
+        onChangeText={setInputUrl}
+        value={inputUrl}
+        />
+        <Button title="Test URL" onPress={async () => {
+          await handleBarCodeScanned({ type: undefined, data: inputUrl });
+        }} />
+        {validationResult !== "" && (
+        <Text style={styles.validationResult}>Validation Result: {validationResult}</Text>
+        )}
       <Text style={styles.maintext}>{scannedUrl}</Text>
       {scanned && (
         <Button title={"Scan again?"} onPress={resetScanner} color="tomato" />
@@ -298,4 +313,17 @@ const styles = StyleSheet.create({
     height: 3,
     backgroundColor: "green",
   },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 20,
+    width: "80%",
+    },
+    validationResult: {
+    marginVertical: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    },
 });
