@@ -46,6 +46,7 @@ export default function ScannerPage({ navigation }) {
 
   const handleRedirect = () => {
     Linking.openURL(scannedUrl);
+    console.log()
   };
 
   const handleModalClose = () => {

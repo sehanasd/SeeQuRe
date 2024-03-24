@@ -13,6 +13,7 @@ import { ProfilePage } from './Screens/Profile/ProfilePage';
 import FeedbackPage from './Screens/Profile/FeedbackPage';
 import SeeQuRe from './Screens/Landing/Landing';
 import AboutUs from './Screens/AboutUs/AboutUsScreen';
+import ScannerPage from './Screens/Scanner/ScannerPage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -57,7 +58,7 @@ const MainTabNavigator = () => (
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Scanner') {
+        if (route.name === 'scanner') {
           iconName = 'line-scan';
         } else if (route.name === 'Profile') {
           iconName = 'account';
@@ -71,8 +72,9 @@ const MainTabNavigator = () => (
       },
     })}
   >
+   
     <Tab.Screen name="URLHistory" component={UrlHistory} options={{headerShown:false}} />
-    <Tab.Screen name="Scanner" component={Scanner}  options={{headerShown:false}}  />
+    <Tab.Screen name="scanner" component={ScannerPage}  options={{headerShown:false}}  />
     <Tab.Screen name="Profile" component={ProfileStack}  options={{headerShown:false}} />
     <Tab.Screen name="About Us" component={AboutUs}  options={{headerShown:false}} />
   </Tab.Navigator>
