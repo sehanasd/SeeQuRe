@@ -16,10 +16,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install firebase
-        run: npm install firebase
+  install-firebase:
+    runs-on: ubuntu-latest
 
-      - name: Install Jotai
-        run: npm install -i jotai
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Firebase dependencies
+        run: npm install firebase
 
      
