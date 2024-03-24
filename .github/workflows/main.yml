@@ -16,14 +16,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-  install-firebase:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Install Firebase dependencies
         run: npm install firebase
+        working-directory: /home/runner/work/SeeQuRe/SeeQuRe/package-lock.json
 
      
