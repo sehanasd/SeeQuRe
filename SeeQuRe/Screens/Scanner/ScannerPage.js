@@ -18,6 +18,7 @@ import { useAtom } from "jotai";
 // import { userIdAtom } from '../userAtom';
 import { userDocIdAtom } from '../userAtom';
 import { firebase } from "../../components/firebaseConfig";
+import LottieView from 'lottie-react-native';
 
 export default function ScannerPage({ navigation }) {
   // State variables for camera permission, scanned status, and scanned URL
@@ -30,6 +31,8 @@ export default function ScannerPage({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [inputUrl, setInputUrl] = useState("");
   const [validationResult, setValidationResult] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingOverlayVisible, setIsLoadingOverlayVisible] = useState(false);
 
   // Animated value for the scanning line position
   const lineYPos = useRef(new Animated.Value(-150)).current;
@@ -63,6 +66,7 @@ export default function ScannerPage({ navigation }) {
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setScannedUrl(data);
+    setIsLoading(true);
 
     try {
       const response = await axios
@@ -71,7 +75,7 @@ export default function ScannerPage({ navigation }) {
         })
        
         const pred_result = response.data.prediction;
-      
+        setIsLoading(false);
         setIsModalVisible(true);
         setResponseState(response.data);
 
@@ -102,6 +106,7 @@ export default function ScannerPage({ navigation }) {
 
     } catch (error) {
       console.error("Error sending scanned URL:", error);
+      setIsLoading(false);
     }
   };
 
@@ -246,6 +251,42 @@ export default function ScannerPage({ navigation }) {
           </TouchableOpacity>
         </Modal>
       )}
+      {/* {isLoadingOverlayVisible && (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {isLoading && (
+              <LottieView
+                source={require('../../components/qrScan.json')}
+                autoPlay
+                loop
+                style={{ width: 200, height: 200 }}
+              />
+            )}
+          </View>
+          )} */}
+          {/* {isLoading && (
+      <View style={StyleSheet.absoluteFillObject}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <LottieView
+            source={require('../../components/qrScan.json')}
+            autoPlay
+            loop
+            style={{ width: 200, height: 200 }}
+          />
+        </View>
+      </View>
+    )} */}
+    {isLoading && (
+      <View style={[StyleSheet.absoluteFillObject, styles.loadingOverlay]}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <LottieView
+            source={require('../../components/qrScan.json')}
+            autoPlay
+            loop
+            style={{ width: 200, height: 200 }}
+          />
+        </View>
+      </View>
+    )}
     </View>
   );
 }
@@ -327,4 +368,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     },
+    loadingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black color
+    }
 });

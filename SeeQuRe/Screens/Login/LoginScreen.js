@@ -8,6 +8,7 @@ import { useSetAtom } from "jotai";
 import { userIdAtom } from '../userAtom';
 import { userNameAtom } from '../userAtom';
 import { userDocIdAtom } from '../userAtom';
+import LottieView from 'lottie-react-native';
 
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -19,6 +20,8 @@ const Login = ({ navigation }) => {
     const setUserDocId = useSetAtom(userDocIdAtom);
     const emailInputRef = useRef(null);
     const passwordInputRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
+
     const loginUser = async (email, password, navigation) => {
         try {
             if (!email || !password) {
@@ -60,10 +63,13 @@ const Login = ({ navigation }) => {
 
             console.error("Login error:", error);
             alert(errorMessage);
+        } finally{
+            setIsLoading(false);
         }
     };
 
     const handleLogin = async () => {
+        setIsLoading(true);
         await loginUser(email, password, navigation);
     };
 
@@ -164,7 +170,7 @@ const Login = ({ navigation }) => {
                         <Text>Remember Me</Text>
                     </View>
 
-                    <Button
+                    {/* <Button
                         title="Sign In"
                         filled
                         style={{
@@ -173,7 +179,30 @@ const Login = ({ navigation }) => {
                             height: 40,
                         }}
                         onPress={handleLogin}
-                    />
+                    /> */}
+                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {isLoading && (
+              <LottieView
+                source={require('../../components/loading.json')}
+                autoPlay
+                loop
+                style={{ width: 200, height: 180 }}
+              />
+            )}
+          </View>
+
+                    {!isLoading && (
+                                <Button
+                                title="Sign In"
+                                filled
+                                style={{
+                                    marginTop: 10,
+                                    marginBottom: 4,
+                                    height: 40,
+                                }}
+                                onPress={handleLogin}
+                                />
+                            )}
 
                     <View style={{
                         flexDirection: "row",
@@ -185,6 +214,7 @@ const Login = ({ navigation }) => {
                         <Button title="Register" onPress={() => navigation.navigate("register")} style={{ borderRadius: 0, borderWidth: 0, padding: 10, backgroundColor: 'transparent' }} />
                     </View>
                 </View>
+        
             </ScrollView>
         </SafeAreaView>
     );

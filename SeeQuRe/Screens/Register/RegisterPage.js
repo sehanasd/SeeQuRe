@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { firebase } from "../../components/firebaseConfig";
+import LottieView from 'lottie-react-native';
 
 const RegisterPage = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -19,6 +20,7 @@ const RegisterPage = ({ navigation }) => {
     const password1InputRef = useRef(null);
     const password2InputRef = useRef(null);
     const phoneNoRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const validateName = (name) => {
         // Regular expression for name validation
@@ -83,13 +85,16 @@ const RegisterPage = ({ navigation }) => {
             return;
         }
         try {
+            setIsLoading(true);
             await firebase.auth().createUserWithEmailAndPassword(email, password1);
             const user = firebase.auth().currentUser;
             const userId = user.uid;
             await createUserCollection(userId, name, email, phoneno);
+            setIsLoading(false);
             Alert.alert('User Successfully Created.');
             navigation.navigate("login");
         } catch (error) {
+            setIsLoading(false);
             console.error('Error signing up:', error);
             Alert.alert('Error', 'Failed to register. Please try again later.');
         }
@@ -345,7 +350,7 @@ const RegisterPage = ({ navigation }) => {
                     <Text>I agree to the terms and conditions</Text>
                 </View>
 
-                <Button
+                {/* <Button
                     title="Sign Up"
                     filled
                     onPress={() => registerUser(name, email, phoneno, password1)}
@@ -355,7 +360,30 @@ const RegisterPage = ({ navigation }) => {
                         height: 40,
                     }}
                     testID="signupButton"
-                />
+                /> */}
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {isLoading && (
+              <LottieView
+                source={require('../../components/loading.json')}
+                autoPlay
+                loop
+                style={{ width: 200, height: 180 }}
+              />
+            )}
+          </View>
+          {!isLoading && (
+                    <Button
+                    title="Sign Up"
+                    filled
+                    onPress={() => registerUser(name, email, phoneno, password1)}
+                    style={{
+                        marginTop: 10,
+                        marginBottom: 4,
+                        height: 40,
+                    }}
+                    testID="signupButton"
+                    />
+                    )}
 
                 <View style={{
                     flexDirection: "row",
