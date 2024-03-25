@@ -66,7 +66,7 @@ const FeedbackPage = ({ onSubmit }) => {
       rating: checked,
       comment: text
     };
-    onSubmit(feedbackData); // Call the onSubmit function with feedback data
+    submitFeedback(feedbackData); // Call the onSubmit function with feedback data
  };
 
   return (

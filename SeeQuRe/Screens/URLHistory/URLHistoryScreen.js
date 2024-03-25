@@ -1,20 +1,20 @@
-import React,{ useState, useEffect } from "react";
-import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert,RefreshControl } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, FlatList, Linking, TouchableOpacity, Alert, RefreshControl, Button } from "react-native";
 import { useAtom } from "jotai";
 import { userIdAtom } from '../userAtom';
 import { firebase } from "../../components/firebaseConfig";
 import { userDocIdAtom } from '../userAtom';
 
 const UrlHistory = () => {
-    
     const [userDocId] = useAtom(userDocIdAtom);
     const [urlList, setUrlList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
 
-    const nourlList = [ ];
-   
+    useEffect(() => {
+        fetchUrlHistory();
+    }, [userDocId]);
+
     const fetchUrlHistory = async () => {
         if (userDocId) {
             try {
@@ -25,7 +25,6 @@ const UrlHistory = () => {
                     if (data.URLs) {
                         const urls = Object.entries(data.URLs).map(([url, attribute], index) => ({ id: index + 1, url, attribute }));
                         setUrlList(urls);
-                        //console.log(urls)
                     } else {
                         setUrlList([]);
                     }
@@ -40,17 +39,10 @@ const UrlHistory = () => {
         }
     };
 
-    useEffect(() => {
-        fetchUrlHistory();
-       // console.log(urlList)
-    }, [userDocId]);
-
     const handleRefresh = () => {
         setRefreshing(true);
         fetchUrlHistory().then(() => setRefreshing(false));
     };
-
- 
 
     const handleUrlPress = (url, isMalicious) => {
         if (isMalicious === "MALWARE" || isMalicious === "PHISHING" || isMalicious === "DEFACEMENT") {
@@ -92,6 +84,20 @@ const UrlHistory = () => {
         Linking.openURL(url).catch((err) => console.error('An error occurred', err));
     };
 
+    const clearAllHistory = async () => {
+        try {
+            setLoading(true);
+            await firebase.firestore().collection("users").doc(userDocId).update({
+                URLs: firebase.firestore.FieldValue.delete()
+            });
+            setUrlList([]); // Update urlList state after clearing history
+        } catch (error) {
+            console.error("Error clearing URL history:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const renderItem = ({ item }) => {
         let labelStyle = styles.safeLabel;
         let labelText = "Safe";
@@ -100,6 +106,7 @@ const UrlHistory = () => {
             labelStyle = styles.maliciousLabel;
             labelText = "Malicious";
         }
+        
     
         return (
             <TouchableOpacity onPress={() => handleUrlPress(item.url, item.attribute)}>
@@ -120,34 +127,13 @@ const UrlHistory = () => {
         );
     }
 
-    if (urlList.length === 0) {
-        return (
-            <View style={styles.NoUrlcontainer}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>URL History</Text>
-                </View>
-                < View style={styles.NoUrltxtcontainer}>
-                     <Text style={styles.nourlTxt}>No history
-                     </Text>
-                </View>    
-                <FlatList
-                data={nourlList}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={handleRefresh}
-                    />
-                }
-            />
-            </View>
-        );
-    }
-
     return (
         <View style={styles.container}>
-            {/* <Text style={styles.title}>URL History</Text> */}
-            <View style={styles.titleContainer}>
+            <View style={styles.header}>
                 <Text style={styles.title}>URL History</Text>
+                <TouchableOpacity onPress={clearAllHistory}>
+                    <Text style={styles.clearAllButton}>Clear All</Text>
+                </TouchableOpacity>
             </View>
             <FlatList
                 data={urlList}
@@ -163,6 +149,8 @@ const UrlHistory = () => {
             />
         </View>
     );
+
+    
 };
 
 const styles = StyleSheet.create({
@@ -182,8 +170,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 60, 
         paddingHorizontal: 20,
-        // justifyContent: 'center', 
-        // alignItems: 'center',
     },
     NoUrltxtcontainer: {
         flex: 1,
@@ -197,25 +183,33 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
-        
     },
     loadingTxt: {
         fontSize: 20, 
         fontWeight: 'bold',
         marginBottom: 20,
         textAlign: 'center',
-        
     },
     titleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 20,
     },
     title: {
         fontSize: 24, 
         fontWeight: 'bold',
-        marginBottom: 20,
         textAlign: 'center',
-        
+    },
+    clearAllButton: {
+        // backgroundColor: '#fffff',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        borderRadius: 10,
+        fontSize: 14,
+        fontWeight: 'bold',
+        alignSelf: 'flex-end',
+        color: 'red',
     },
     itemContainer: {
         padding: 10,
