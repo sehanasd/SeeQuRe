@@ -4,10 +4,10 @@
     "slug": "SeeQuRe",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/SeeQuReLogo.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/SeeQuReLogo.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
